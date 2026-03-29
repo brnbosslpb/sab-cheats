@@ -1,3 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/brnbosslpb/sab-cheats/main/brn_sab_cheat.lua.txt"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/brnbosslpb/sab-cheats/main/sab_cheats_brn.lua.txt"))()
 
-load put on any executor roblox 
+load for every executor 
