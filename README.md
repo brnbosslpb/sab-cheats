@@ -1,3 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/brnbosslpb/sab-cheats/refs/heads/main/b735ba30e64192f6.lua.txt"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/brnbosslpb/sab-cheats/main/brn_sab_cheat.lua.txt"))()
 
-link of cheats
+load put on any executor roblox 
