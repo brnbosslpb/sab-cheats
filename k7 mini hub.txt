@@ -122,6 +122,7 @@ local Lighting     = game:GetService("Lighting")
 local HS           = game:GetService("HttpService")
 local LP           = Players.LocalPlayer
 local G = {
+    HUB_NAME = "BRN HUB",
 	NS=60, CS=30, DAS=150, DAD=0.2, IJ_GravityPercent=20, IJ_HopPower=12,
 	speedMode=false, autoGrabEnabled=false, antiRagdollEnabled=false, infJumpEnabled=false,
 	floatEnabled=false, floatConn=nil, floatSetVisual=nil, FLOAT_TARGET_Y=nil, FLOAT_STUDS=8,
