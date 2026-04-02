@@ -1985,21 +1985,6 @@ local function buildMobileGUI()
 	actionsReopenBtn.Visible=false; actionsReopenBtn.ZIndex=10
 	actionsReopenBtn.MouseButton1Click:Connect(function() _mobPanel.Visible=true; actionsReopenBtn.Visible=false end)
 	local detachedBtns = {}
-	local function saveDetached()
-		if not writefile then return end
-		local t = {}
-		for id, data in pairs(detachedBtns) do
-			if data.frame and data.frame.Parent then t[id]={x=data.frame.Position.X.Offset,y=data.frame.Position.Y.Offset} end
-		end
-		pcall(function() writefile("K7DetachedBtns.json",HS:JSONEncode(t)) end)
-	end
-	local function loadDetached()
-		if not(isfile and isfile("K7DetachedBtns.json")) then return {} end
-		local ok,t=pcall(function() return HS:JSONDecode(readfile("K7DetachedBtns.json")) end)
-		return (ok and t) or {}
-	end
-	local savedDetached=loadDetached()
-	do
 		local hdr=Instance.new("Frame",_mobPanel); hdr.Size=UDim2.new(1,0,0,24); hdr.BackgroundColor3=Color3.fromRGB(18,18,22); hdr.BorderSizePixel=0; addCorner(hdr,10)
 		local ttl=Instance.new("TextLabel",hdr); ttl.Size=UDim2.new(1,-54,1,0); ttl.Position=UDim2.new(0,6,0,0)
 		ttl.BackgroundTransparency=1; ttl.Text="K7 ACTIONS"; ttl.TextColor3=C.RED2; ttl.Font=Enum.Font.GothamBlack; ttl.TextSize=9; ttl.TextXAlignment=Enum.TextXAlignment.Left
