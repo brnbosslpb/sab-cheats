@@ -400,7 +400,7 @@ UIS.JumpRequest:Connect(function()
 	if not G.floatEnabled or not G.FLOAT_TARGET_Y then return end
 	G.FLOAT_TARGET_Y = G.FLOAT_TARGET_Y + 15
 end)
-RunService:BindToRenderStep("K7DT",Enum.RenderPriority.Input.Value,function(dt)
+RunService:BindToRenderStep("BRN_DT",Enum.RenderPriority.Input.Value,function(dt)
 	G._dtSmooth=G._dtSmooth+(math.clamp(dt,1/120,1/20)-G._dtSmooth)*0.1
 end)
 do local _spdT=0; RunService.Heartbeat:Connect(function()
