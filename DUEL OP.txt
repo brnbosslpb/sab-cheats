@@ -11,8 +11,8 @@ local me   = Players.LocalPlayer
 local pgui = me:WaitForChild("PlayerGui")
 
 local cfg = {
-    NormalSpeed       = 60,
-    CarrySpeed        = 30,
+    NormalSpeed       = 60.6,
+    CarrySpeed        = 30.3,
     FloatHeight       = 8,
     DodgeHeight       = 7,
     StealRadius       = 7,
