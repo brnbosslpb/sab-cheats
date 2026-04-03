@@ -12,7 +12,7 @@ local isMobile = UserInputService.TouchEnabled and not UserInputService.Keyboard
 local guiScale = isMobile and 0.55 or 1
 
 local sg = Instance.new("ScreenGui")
-sg.Name = "IrishHubDuels"
+sg.Name = "BRN Hub"
 sg.ResetOnSpawn = false
 sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 sg.Parent = Player.PlayerGui
@@ -56,7 +56,7 @@ local leftKeybind = Enum.KeyCode.Q
 local batKeybind = Enum.KeyCode.G
 
 local HttpService = game:GetService("HttpService")
-local configFile = "IrishHubDuels_config.json"  -- Changed to .json for better compatibility
+local configFile = "Brnhubconfig.json"  -- Changed to .json for better compatibility
 if isfile(configFile) then
     local success, loaded = pcall(HttpService.JSONDecode, HttpService, readfile(configFile))
     if success then
