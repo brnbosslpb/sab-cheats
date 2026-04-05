@@ -204,6 +204,8 @@ local searchQuery = ""
 local isCloning = false
 local highestAnimal = nil
 local statLabels = nil
+contentFrame = Instance.new("Frame")
+contentFrame.Name = "BRN Hub"
 
 local ESP_INSTANCES = {}
 local PLAYER_ESP = {}
@@ -805,6 +807,7 @@ local function saveGuiPosition()
 end
 
 local miniGuiContainer = nil -- Will be set when mini GUI is created
+miniGuiContainer.Name = "BRN Hub"
 
 local function saveMiniGuiPosition()
     if not miniGuiContainer then return end
