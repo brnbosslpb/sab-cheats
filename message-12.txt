@@ -121,7 +121,322 @@ local Lighting = game:GetService("Lighting")
 
 local me   = Players.LocalPlayer
 local pgui = me:WaitForChild("PlayerGui")
+-- ===================== CRÉATION DE L'UI BRN HUB =====================
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BRN_Hub"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = pgui
 
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 350, 0, 800)
+mainFrame.Position = UDim2.new(0, 20, 0, 20)
+mainFrame.BackgroundColor3 = T.BG
+mainFrame.BorderColor3 = T.Border
+mainFrame.BorderSizePixel = 2
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "Title"
+titleLabel.Size = UDim2.new(1, 0, 0, 40)
+titleLabel.BackgroundColor3 = T.Card
+titleLabel.TextColor3 = T.Text
+titleLabel.Text = "BRN Hub"
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 18
+titleLabel.BorderSizePixel = 0
+titleLabel.Parent = mainFrame
+
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Name = "ScrollFrame"
+scrollFrame.Size = UDim2.new(1, -10, 1, -90)
+scrollFrame.Position = UDim2.new(0, 5, 0, 50)
+scrollFrame.BackgroundColor3 = T.BG
+scrollFrame.BorderSizePixel = 0
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 2000)
+scrollFrame.ScrollBarThickness = 8
+scrollFrame.Parent = mainFrame
+
+local function createButton(name, cfg_key, parent, yPos)
+    local btn = Instance.new("TextButton")
+    btn.Name = name
+    btn.Size = UDim2.new(1, -10, 0, 35)
+    btn.Position = UDim2.new(0, 5, 0, yPos)
+    btn.BackgroundColor3 = cfg[cfg_key] and T.Accent or T.Card
+    btn.TextColor3 = T.Text
+    btn.Text = name .. ": " .. (cfg[cfg_key] and "ON" or "OFF")
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 13
+    btn.BorderSizePixel = 0
+    btn.Parent = parent
+    
+    return btn
+end
+
+local buttons = {}
+local yOffset = 0
+
+-- Speed
+buttons.speedBtn = createButton("Speed Toggle", "NormalSpeed", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.speedBtn.MouseButton1Click:Connect(function()
+    speedToggled = not speedToggled
+    buttons.speedBtn.Text = "Speed Toggle: " .. (speedToggled and "ON" or "OFF")
+    buttons.speedBtn.BackgroundColor3 = speedToggled and T.Accent or T.Card
+end)
+
+-- Anti Ragdoll
+buttons.antiRagBtn = createButton("Anti Ragdoll", "AntiRagdoll", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.antiRagBtn.MouseButton1Click:Connect(function()
+    cfg.AntiRagdoll = not cfg.AntiRagdoll
+    buttons.antiRagBtn.Text = "Anti Ragdoll: " .. (cfg.AntiRagdoll and "ON" or "OFF")
+    buttons.antiRagBtn.BackgroundColor3 = cfg.AntiRagdoll and T.Accent or T.Card
+    if cfg.AntiRagdoll then enableAntiRagdoll() else disableAntiRagdoll() end
+end)
+
+-- Infinite Jump
+buttons.jumpBtn = createButton("Infinite Jump", "InfiniteJump", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.jumpBtn.MouseButton1Click:Connect(function()
+    cfg.InfiniteJump = not cfg.InfiniteJump
+    buttons.jumpBtn.Text = "Infinite Jump: " .. (cfg.InfiniteJump and "ON" or "OFF")
+    buttons.jumpBtn.BackgroundColor3 = cfg.InfiniteJump and T.Accent or T.Card
+end)
+
+-- AutoBat
+buttons.autoBatBtn = createButton("AutoBat", "AutoBat", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.autoBatBtn.MouseButton1Click:Connect(function()
+    cfg.AutoBat = not cfg.AutoBat
+    buttons.autoBatBtn.Text = "AutoBat: " .. (cfg.AutoBat and "ON" or "OFF")
+    buttons.autoBatBtn.BackgroundColor3 = cfg.AutoBat and T.Accent or T.Card
+    if cfg.AutoBat then showBatRing() else hideBatRing() end
+end)
+
+-- Bat Aimbot
+buttons.batAimbotBtn = createButton("Bat Aimbot", "BatAimbot", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.batAimbotBtn.MouseButton1Click:Connect(function()
+    cfg.BatAimbot = not cfg.BatAimbot
+    buttons.batAimbotBtn.Text = "Bat Aimbot: " .. (cfg.BatAimbot and "ON" or "OFF")
+    buttons.batAimbotBtn.BackgroundColor3 = cfg.BatAimbot and T.Accent or T.Card
+end)
+
+-- Float
+buttons.floatBtn = createButton("Float", "Float", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.floatBtn.MouseButton1Click:Connect(function()
+    cfg.Float = not cfg.Float
+    buttons.floatBtn.Text = "Float: " .. (cfg.Float and "ON" or "OFF")
+    buttons.floatBtn.BackgroundColor3 = cfg.Float and T.Accent or T.Card
+    if cfg.Float then startFloat() else stopFloat() end
+end)
+
+-- Dodge
+buttons.dodgeBtn = createButton("Dodge", "Dodge", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.dodgeBtn.MouseButton1Click:Connect(function()
+    cfg.Dodge = not cfg.Dodge
+    buttons.dodgeBtn.Text = "Dodge: " .. (cfg.Dodge and "ON" or "OFF")
+    buttons.dodgeBtn.BackgroundColor3 = cfg.Dodge and T.Accent or T.Card
+    if cfg.Dodge then startDodge() else stopDodge() end
+end)
+
+-- SpinBot
+buttons.spinBtn = createButton("SpinBot", "SpinBot", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.spinBtn.MouseButton1Click:Connect(function()
+    cfg.SpinBot = not cfg.SpinBot
+    buttons.spinBtn.Text = "SpinBot: " .. (cfg.SpinBot and "ON" or "OFF")
+    buttons.spinBtn.BackgroundColor3 = cfg.SpinBot and T.Accent or T.Card
+    if cfg.SpinBot then startSpin() else killSpin() end
+end)
+
+-- Unwalk
+buttons.unwalkBtn = createButton("Unwalk", "Unwalk", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.unwalkBtn.MouseButton1Click:Connect(function()
+    cfg.Unwalk = not cfg.Unwalk
+    buttons.unwalkBtn.Text = "Unwalk: " .. (cfg.Unwalk and "ON" or "OFF")
+    buttons.unwalkBtn.BackgroundColor3 = cfg.Unwalk and T.Accent or T.Card
+    if cfg.Unwalk then enableUnwalk() else disableUnwalk() end
+end)
+
+-- PlayerESP
+buttons.espBtn = createButton("Player ESP", "PlayerESP", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.espBtn.MouseButton1Click:Connect(function()
+    cfg.PlayerESP = not cfg.PlayerESP
+    buttons.espBtn.Text = "Player ESP: " .. (cfg.PlayerESP and "ON" or "OFF")
+    buttons.espBtn.BackgroundColor3 = cfg.PlayerESP and T.Accent or T.Card
+    if cfg.PlayerESP then enableESP() else disableESP() end
+end)
+
+-- HardHit
+buttons.hardHitBtn = createButton("HardHit", "HardHit", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.hardHitBtn.MouseButton1Click:Connect(function()
+    cfg.HardHit = not cfg.HardHit
+    buttons.hardHitBtn.Text = "HardHit: " .. (cfg.HardHit and "ON" or "OFF")
+    buttons.hardHitBtn.BackgroundColor3 = cfg.HardHit and T.Accent or T.Card
+    if cfg.HardHit then showHHRing() else hideHHRing() end
+end)
+
+-- LowGravity
+buttons.lowGravBtn = createButton("Low Gravity", "LowGravity", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.lowGravBtn.MouseButton1Click:Connect(function()
+    cfg.LowGravity = not cfg.LowGravity
+    buttons.lowGravBtn.Text = "Low Gravity: " .. (cfg.LowGravity and "ON" or "OFF")
+    buttons.lowGravBtn.BackgroundColor3 = cfg.LowGravity and T.Accent or T.Card
+    applyLowGrav()
+end)
+
+-- AutoSteal
+buttons.stealBtn = createButton("Auto Steal", "AutoSteal", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.stealBtn.MouseButton1Click:Connect(function()
+    cfg.AutoSteal = not cfg.AutoSteal
+    buttons.stealBtn.Text = "Auto Steal: " .. (cfg.AutoSteal and "ON" or "OFF")
+    buttons.stealBtn.BackgroundColor3 = cfg.AutoSteal and T.Accent or T.Card
+end)
+
+-- AutoPlayLeft
+buttons.autoPlayLeftBtn = createButton("Auto Play Left", "AutoPlayLeft", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.autoPlayLeftBtn.MouseButton1Click:Connect(function()
+    if buttons.autoPlayRightBtn and buttons.autoPlayRightBtn.Parent then
+        cfg.AutoPlayRight = false
+        buttons.autoPlayRightBtn.BackgroundColor3 = T.Card
+        buttons.autoPlayRightBtn.Text = "Auto Play Right: OFF"
+    end
+    cfg.AutoPlayLeft = not cfg.AutoPlayLeft
+    buttons.autoPlayLeftBtn.Text = "Auto Play Left: " .. (cfg.AutoPlayLeft and "ON" or "OFF")
+    buttons.autoPlayLeftBtn.BackgroundColor3 = cfg.AutoPlayLeft and T.Accent or T.Card
+    if cfg.AutoPlayLeft then aplOn = true; startAutoPlayLeft() else stopAutoPlayLeft() end
+end)
+
+-- AutoPlayRight
+buttons.autoPlayRightBtn = createButton("Auto Play Right", "AutoPlayRight", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.autoPlayRightBtn.MouseButton1Click:Connect(function()
+    if buttons.autoPlayLeftBtn and buttons.autoPlayLeftBtn.Parent then
+        cfg.AutoPlayLeft = false
+        buttons.autoPlayLeftBtn.BackgroundColor3 = T.Card
+        buttons.autoPlayLeftBtn.Text = "Auto Play Left: OFF"
+    end
+    cfg.AutoPlayRight = not cfg.AutoPlayRight
+    buttons.autoPlayRightBtn.Text = "Auto Play Right: " .. (cfg.AutoPlayRight and "ON" or "OFF")
+    buttons.autoPlayRightBtn.BackgroundColor3 = cfg.AutoPlayRight and T.Accent or T.Card
+    if cfg.AutoPlayRight then aprOn = true; startAutoPlayRight() else stopAutoPlayRight() end
+end)
+
+-- AutoLeft
+buttons.autoLeftBtn = createButton("Auto Left", "AutoLeft", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.autoLeftBtn.MouseButton1Click:Connect(function()
+    if buttons.autoRightBtn and buttons.autoRightBtn.Parent then
+        cfg.AutoRight = false
+        buttons.autoRightBtn.BackgroundColor3 = T.Card
+        buttons.autoRightBtn.Text = "Auto Right: OFF"
+    end
+    cfg.AutoLeft = not cfg.AutoLeft
+    buttons.autoLeftBtn.Text = "Auto Left: " .. (cfg.AutoLeft and "ON" or "OFF")
+    buttons.autoLeftBtn.BackgroundColor3 = cfg.AutoLeft and T.Accent or T.Card
+    if cfg.AutoLeft then alEnabled = true; startAutoLeft() else stopAutoLeft() end
+end)
+
+-- AutoRight
+buttons.autoRightBtn = createButton("Auto Right", "AutoRight", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.autoRightBtn.MouseButton1Click:Connect(function()
+    if buttons.autoLeftBtn and buttons.autoLeftBtn.Parent then
+        cfg.AutoLeft = false
+        buttons.autoLeftBtn.BackgroundColor3 = T.Card
+        buttons.autoLeftBtn.Text = "Auto Left: OFF"
+    end
+    cfg.AutoRight = not cfg.AutoRight
+    buttons.autoRightBtn.Text = "Auto Right: " .. (cfg.AutoRight and "ON" or "OFF")
+    buttons.autoRightBtn.BackgroundColor3 = cfg.AutoRight and T.Accent or T.Card
+    if cfg.AutoRight then arEnabled = true; startAutoRight() else stopAutoRight() end
+end)
+
+-- AutoTpLeft
+buttons.autoTpLeftBtn = createButton("Auto TP Left", "AutoTpLeft", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.autoTpLeftBtn.MouseButton1Click:Connect(function()
+    if buttons.autoTpRightBtn and buttons.autoTpRightBtn.Parent then
+        cfg.AutoTpRight = false
+        buttons.autoTpRightBtn.BackgroundColor3 = T.Card
+        buttons.autoTpRightBtn.Text = "Auto TP Right: OFF"
+    end
+    cfg.AutoTpLeft = not cfg.AutoTpLeft
+    buttons.autoTpLeftBtn.Text = "Auto TP Left: " .. (cfg.AutoTpLeft and "ON" or "OFF")
+    buttons.autoTpLeftBtn.BackgroundColor3 = cfg.AutoTpLeft and T.Accent or T.Card
+end)
+
+-- AutoTpRight
+buttons.autoTpRightBtn = createButton("Auto TP Right", "AutoTpRight", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.autoTpRightBtn.MouseButton1Click:Connect(function()
+    if buttons.autoTpLeftBtn and buttons.autoTpLeftBtn.Parent then
+        cfg.AutoTpLeft = false
+        buttons.autoTpLeftBtn.BackgroundColor3 = T.Card
+        buttons.autoTpLeftBtn.Text = "Auto TP Left: OFF"
+    end
+    cfg.AutoTpRight = not cfg.AutoTpRight
+    buttons.autoTpRightBtn.Text = "Auto TP Right: " .. (cfg.AutoTpRight and "ON" or "OFF")
+    buttons.autoTpRightBtn.BackgroundColor3 = cfg.AutoTpRight and T.Accent or T.Card
+end)
+
+-- FloatPlayLeft
+buttons.floatPlayLeftBtn = createButton("Float Play Left", "FloatPlayL", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.floatPlayLeftBtn.MouseButton1Click:Connect(function()
+    cfg.FloatPlayL = not cfg.FloatPlayL
+    buttons.floatPlayLeftBtn.Text = "Float Play Left: " .. (cfg.FloatPlayL and "ON" or "OFF")
+    buttons.floatPlayLeftBtn.BackgroundColor3 = cfg.FloatPlayL and T.Accent or T.Card
+end)
+
+-- FloatPlayRight
+buttons.floatPlayRightBtn = createButton("Float Play Right", "FloatPlayR", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.floatPlayRightBtn.MouseButton1Click:Connect(function()
+    cfg.FloatPlayR = not cfg.FloatPlayR
+    buttons.floatPlayRightBtn.Text = "Float Play Right: " .. (cfg.FloatPlayR and "ON" or "OFF")
+    buttons.floatPlayRightBtn.BackgroundColor3 = cfg.FloatPlayR and T.Accent or T.Card
+end)
+
+-- Optimizer
+buttons.optimizerBtn = createButton("Optimizer", "Optimizer", scrollFrame, yOffset)
+yOffset = yOffset + 40
+buttons.optimizerBtn.MouseButton1Click:Connect(function()
+    cfg.Optimizer = not cfg.Optimizer
+    buttons.optimizerBtn.Text = "Optimizer: " .. (cfg.Optimizer and "ON" or "OFF")
+    buttons.optimizerBtn.BackgroundColor3 = cfg.Optimizer and T.Accent or T.Card
+    if cfg.Optimizer then enableOptimizer() else disableOptimizer() end
+end)
+
+-- Close Button
+local closeBtn = Instance.new("TextButton")
+closeBtn.Name = "CloseBtn"
+closeBtn.Size = UDim2.new(1, -10, 0, 35)
+closeBtn.Position = UDim2.new(0, 5, 1, -40)
+closeBtn.BackgroundColor3 = T.ErrRed
+closeBtn.TextColor3 = T.Text
+closeBtn.Text = "Close UI"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 13
+closeBtn.BorderSizePixel = 0
+closeBtn.Parent = mainFrame
+
+closeBtn.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- ===================== FIN UI =====================
 local cfg = {
     NormalSpeed       = 60.3,
     CarrySpeed        = 30.3,
