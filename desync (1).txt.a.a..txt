@@ -72,7 +72,7 @@ HeaderCorner.CornerRadius = UDim.new(0, 16)
 HeaderCorner.Parent = HeaderFrame
  
 local LogoFrame = Instance.new('Frame')
-LogoFrame.Name = 'gerxqciv'
+LogoFrame.Name = 'BRN_Hub'
 LogoFrame.BackgroundColor3 = accentColor
 LogoFrame.Position = UDim2.new(0, 15, 0.5, -18)
 LogoFrame.Size = UDim2.new(0, 36, 0, 36)
@@ -86,20 +86,13 @@ LogoCorner.CornerRadius = UDim.new(0, 8)
 LogoCorner.Parent = LogoFrame
  
 local LogoGlow = Instance.new('ImageLabel')
-LogoGlow.Name = 'hbdksm'
+LogoGlow.Name = 'BRN_Hub'
 LogoGlow.BackgroundTransparency = 1
 LogoGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
 LogoGlow.Size = UDim2.new(1, 40, 1, 40)
 LogoGlow.AnchorPoint = Vector2.new(0.5, 0.5)
-LogoGlow.Image = 'rbxasset://textures/ui/Glow.png'
-LogoGlow.ImageColor3 = accentColor
-LogoGlow.ImageTransparency = 0.6
 LogoGlow.ZIndex = LogoFrame.ZIndex - 1
 LogoGlow.Parent = LogoFrame
- 
-local LogoImage = Instance.new('ImageLabel')
-LogoImage.Name = 'tebiemwta'
-LogoImage.Image = 'rbxassetid://99495807378456'  
  
 LogoImage.BackgroundTransparency = 1
 LogoImage.Size = UDim2.new(1, 0, 1, 0)
@@ -109,7 +102,7 @@ LogoImage.ZIndex = 9003
 LogoImage.Parent = LogoFrame
  
 local TitleLabel = Instance.new('TextLabel')
-TitleLabel.Name = 'omcejvz'
+TitleLabel.Name = 'BRN_Hub'
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Position = UDim2.new(0, 58, 0, 10)
 TitleLabel.Size = UDim2.new(0, 200, 0, 24)
@@ -122,7 +115,7 @@ TitleLabel.ZIndex = 9002
 TitleLabel.Parent = HeaderFrame
  
 local VersionLabel = Instance.new('TextLabel')
-VersionLabel.Name = 'ggctsqkr'
+VersionLabel.Name = 'BRN_Hub'
 VersionLabel.BackgroundTransparency = 1
 VersionLabel.Position = UDim2.new(0, 58, 0, 36)
 VersionLabel.Size = UDim2.new(0, 200, 0, 16)
@@ -135,7 +128,7 @@ VersionLabel.ZIndex = 9002
 VersionLabel.Parent = HeaderFrame
  
 local SyncStatusFrame = Instance.new('Frame')
-SyncStatusFrame.Name = 'qsyubwurw'
+SyncStatusFrame.Name = 'BRN_Hub'
 SyncStatusFrame.BackgroundColor3 = Color3.fromRGB(45, 50, 70)
 SyncStatusFrame.BorderSizePixel = 0
 SyncStatusFrame.Position = UDim2.new(1, -155, 0.5, -16)
@@ -148,14 +141,14 @@ SyncCorner.CornerRadius = UDim.new(0, 10)
 SyncCorner.Parent = SyncStatusFrame
  
 local SyncStroke = Instance.new('UIStroke')
-SyncStroke.Name = 'cywjlym'
+SyncStroke.Name = 'BRN_Hub'
 SyncStroke.Color = accentDark
 SyncStroke.Thickness = 1.5
 SyncStroke.Transparency = 0.5
 SyncStroke.Parent = SyncStatusFrame
  
 local ToggleIndicator = Instance.new('Frame')
-ToggleIndicator.Name = 'ojowep'
+ToggleIndicator.Name = 'BRN_Hub'
 ToggleIndicator.BackgroundColor3 = accentDark
 ToggleIndicator.BorderSizePixel = 0
 ToggleIndicator.Position = UDim2.new(0, 10, 0.5, -5)
@@ -168,12 +161,12 @@ IndicatorCorner.CornerRadius = UDim.new(1, 0)
 IndicatorCorner.Parent = ToggleIndicator
  
 local StatusLabel = Instance.new('TextLabel')
-StatusLabel.Name = 'jshhzibsa'
+StatusLabel.Name = 'BRN_Hub'
 StatusLabel.BackgroundTransparency = 1
 StatusLabel.Position = UDim2.new(0, 24, 0, 0)
 StatusLabel.Size = UDim2.new(1, -28, 1, 0)
 StatusLabel.Font = Enum.Font.GothamBold
-StatusLabel.Text = 'SYNCED'
+StatusLabel.Text = 'BRN_Hub'
 StatusLabel.TextColor3 = textColor
 StatusLabel.TextSize = 11
 StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -181,7 +174,7 @@ StatusLabel.ZIndex = 9003
 StatusLabel.Parent = SyncStatusFrame
  
 local CloseButton = Instance.new('TextButton')
-CloseButton.Name = 'ipxnpn'
+CloseButton.Name = 'BRN_Hub'
 CloseButton.BackgroundColor3 = Color3.fromRGB(45, 50, 70)
 CloseButton.BorderSizePixel = 0
 CloseButton.Position = UDim2.new(1, -45, 0.5, -16)
