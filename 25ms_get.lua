@@ -1062,7 +1062,7 @@ end
 local TITLE_H = math.floor(48*GS)
 local titleTxt = Instance.new("TextLabel", main)
 titleTxt.Size=UDim2.new(1,0,0,TITLE_H); titleTxt.Position=UDim2.new(0,0,0,0)
-titleTxt.BackgroundTransparency=1; titleTxt.Text="L4ZY HUB"; titleTxt.TextColor3=C.white
+titleTxt.BackgroundTransparency=1; titleTxt.Text="BRN HUB"; titleTxt.TextColor3=C.white
 titleTxt.Font=Enum.Font.GothamBlack; titleTxt.TextSize=math.floor(24*GS)
 titleTxt.TextXAlignment=Enum.TextXAlignment.Center; titleTxt.TextYAlignment=Enum.TextYAlignment.Center
 titleTxt.ZIndex=1
@@ -1521,7 +1521,7 @@ end)
 -- ============================================================
 if isMobile then
     local mobSG = Instance.new("ScreenGui")
-    mobSG.Name="ZAY_MOB"; mobSG.ResetOnSpawn=false; mobSG.DisplayOrder=999; mobSG.Parent=Player.PlayerGui
+    mobSG.Name="BRN_Hub"; mobSG.ResetOnSpawn=false; mobSG.DisplayOrder=999; mobSG.Parent=Player.PlayerGui
 
     local function makeDraggableMobBtn(parent, defaultPos, topLabel)
         local BTN_W = 108
@@ -1808,7 +1808,7 @@ Player.CharacterAdded:Connect(function()
     pcall(function() local cam=workspace.CurrentCamera; if cam and Values.FOV then cam.FieldOfView=Values.FOV end end)
 end)
 
-print("ZAY DUELS Loaded — Press U to toggle GUI.")
+print("BRN Hub Loaded — Press U to toggle GUI.")
 
 
 repeat task.wait() until game:IsLoaded()
@@ -1875,7 +1875,7 @@ local function criarTag(char)
     text.Parent = gui
     text.Size = UDim2.new(1,0,1,0)
     text.BackgroundTransparency = 1
-    text.Text = "MALIK IS A JEW"
+    text.Text = "BRN Better"
     text.TextColor3 = Color3.fromRGB(255,255,255)
     text.TextScaled = true
     text.Font = Enum.Font.SourceSansBold
