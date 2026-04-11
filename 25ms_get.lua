@@ -176,7 +176,7 @@ local function createSpamBatCircle()
     local c = Player.Character if not c then return end
     local hrp = c:FindFirstChild("HumanoidRootPart") if not hrp then return end
     local circle = Instance.new("Part")
-    circle.Name="ZAY_SpamBatCircle"; circle.Anchored=true; circle.CanCollide=false
+    circle.Name="BRN_SpamBatCircle"; circle.Anchored=true; circle.CanCollide=false
     circle.CastShadow=false; circle.Material=Enum.Material.Neon
     circle.Color=Color3.fromRGB(200,200,200); circle.Shape=Enum.PartType.Cylinder
     circle.Size=Vector3.new(0.08,20,20); circle.Transparency=0.18; circle.Parent=workspace
@@ -358,10 +358,10 @@ local function setupFloatObjects(char)
     if floatAttachment  then floatAttachment:Destroy();  floatAttachment  = nil end
     local hrp = char and char:FindFirstChild("HumanoidRootPart") if not hrp then return end
     floatAttachment        = Instance.new("Attachment")
-    floatAttachment.Name   = "ZAY_FloatAttachment"
+    floatAttachment.Name   = "BRN_FloatAttachment"
     floatAttachment.Parent = hrp
     floatVectorForce                    = Instance.new("VectorForce")
-    floatVectorForce.Name               = "ZAY_FloatForce"
+    floatVectorForce.Name               = "BRN_FloatForce"
     floatVectorForce.Attachment0        = floatAttachment
     floatVectorForce.ApplyAtCenterOfMass = true
     floatVectorForce.RelativeTo         = Enum.ActuatorRelativeTo.World
@@ -943,7 +943,7 @@ local function createSpeedLabel(char)
     local hrp = char:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
     local bb = Instance.new("BillboardGui")
-    bb.Name = "ZAY_SpeedLabel"; bb.AlwaysOnTop = false
+    bb.Name = "BRN_SpeedLabel"; bb.AlwaysOnTop = false
     bb.Size = UDim2.new(0, 120, 0, 30); bb.StudsOffset = Vector3.new(0, 3.2, 0)
     bb.MaxDistance = 60; bb.Parent = hrp
     local lbl = Instance.new("TextLabel", bb)
@@ -1853,7 +1853,7 @@ gradient.Color = ColorSequence.new{
 
 -- Função de chat
 button.MouseButton1Click:Connect(function()
-    game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("/L4ZY on top")
+    game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("/BRN on top")
 end)
 
 local player = game.Players.LocalPlayer
