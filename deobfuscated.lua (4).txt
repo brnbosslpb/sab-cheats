@@ -388,9 +388,13 @@ local function createToggleRow(def, callback)
     end)
 end
 
-createToggleRow(toggleDefs[1], function(s) end)
+createToggleRow(toggleDefs[1], function(s)
+    semiTPEnabled = s
+end)
 createToggleRow(toggleDefs[2], function(s)
     speedAfterSteal = s
+end)
+
 
     if s then
         if speedConnection then
@@ -766,21 +770,22 @@ local function ResetToWork()
         f:Destroy()
     end
 end
-local function getHRP()
-    local char = player.Character
+local function getNearestAnimal()
+    local hrp = getHRP()
+    if not hrp then return nil end
 
-    if not player.Character then
-        return nil
+    local nearest = nil
+    local minDist = math.huge
+
+    for _, animal in ipairs(allAnimalsCache) do
+        local dist = (hrp.Position - animal.worldPosition).Magnitude
+        if dist < minDist then
+            minDist = dist
+            nearest = animal
+        end
     end
-
-    return char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('UpperTorso')
+    return nearest
 end
-local function isMyBase(plotName)
-    local plot = workspace.Plots:FindFirstChild(plotName)
-
-    if not plot then
-        return false
-    end
 
     local sign = plot:FindFirstChild('PlotSign')
 
