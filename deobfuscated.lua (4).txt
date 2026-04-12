@@ -1,5 +1,3 @@
--- ts file was generated at discord.gg/25ms
-
 local Players = game:GetService('Players')
 local TweenService = game:GetService('TweenService')
 local RunService = game:GetService('RunService')
@@ -27,7 +25,7 @@ end
 
 local screenGui = Instance.new('ScreenGui')
 
-screenGui.Name = 'HexSemiTPGui'
+screenGui.Name = 'BRNSemiTPGui'
 screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 screenGui.Parent = CoreGui
@@ -228,7 +226,7 @@ local titleLabel = Instance.new('TextLabel')
 titleLabel.Size = UDim2.new(0, 150, 0, 22)
 titleLabel.Position = UDim2.new(0, 14, 0, 12)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = 'DAWOOD HUB'
+titleLabel.Text = 'BRN HUB'
 titleLabel.TextColor3 = C.text
 titleLabel.TextSize = 15
 titleLabel.Font = Enum.Font.GothamBold
@@ -241,7 +239,7 @@ local discordLabel = Instance.new('TextLabel')
 discordLabel.Size = UDim2.new(0, 150, 0, 16)
 discordLabel.Position = UDim2.new(0, 14, 0, 33)
 discordLabel.BackgroundTransparency = 1
-discordLabel.Text = 'https://discord.gg/dmnyRMXXR'
+discordLabel.Text = '@brr782k'
 discordLabel.TextSize = 11
 discordLabel.Font = Enum.Font.GothamMedium
 discordLabel.TextColor3 = Color3.fromRGB(180, 140, 230)
@@ -451,7 +449,7 @@ local sectionLabel = Instance.new('TextLabel')
 sectionLabel.Size = UDim2.new(1, -28, 0, 14)
 sectionLabel.Position = UDim2.new(0, 14, 0, 155)
 sectionLabel.BackgroundTransparency = 1
-sectionLabel.Text = 'Semi Instant TP'
+sectionLabel.Text = 'BRN Semi TP'
 sectionLabel.TextColor3 = C.textDim
 sectionLabel.TextSize = 9
 sectionLabel.Font = Enum.Font.GothamBold
@@ -1121,4 +1119,4 @@ task.spawn(function()
     ResetToWork()
 end)
 initializeScanner()
-print('Dawood hub semi tp loaded')
+print('BRN hub semi tp loaded')
