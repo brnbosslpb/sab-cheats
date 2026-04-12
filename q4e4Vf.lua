@@ -833,30 +833,29 @@ print("----------------------------")
 -- AUTO-DETECTION BRAINROT & KICK (VERSION SCANNER)
 -- =========================================================
 task.spawn(function()
-        local function startKickAfterSteal()
-    player.PlayerGui.DescendantAdded:Connect(function(obj)
-        if obj:IsA("TextLabel") then
-            -- On check le texte instantanément
-            if string.find(string.lower(obj.Text), "you stole") then
-                task.wait(0.01) -- Le seul petit délai pour laisser l'UI s'initialiser
-                
-                local msg = "ezzzz steal by brr782k <3"
-                
-                -- On bombarde le chat
-                local chatService = game:GetService("TextChatService")
-                if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
-                    local gen = chatService:FindFirstChild("RBXGeneral", true)
-                    if gen then gen:SendAsync(msg) end
-                else
-                    local event = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                    if event then event:FireServer(msg, "All") end
-                end
-                
-                -- KICK DIRECT : Pas de wait 0.05, on veut passer avant le jeu
-                player:Kick(msg)
+    if not game:IsLoaded() then game.Loaded:Wait() end
+    local p = game.Players.LocalPlayer
+    local pgui = p:WaitForChild("PlayerGui")
+
+    pgui.DescendantAdded:Connect(function(obj)
+        if obj:IsA("TextLabel") and string.find(string.lower(obj.Text), "you stole") then
+            -- On capture l'instant T à la milliseconde
+            task.wait(0.01)
+            
+            local msg = "ezzzz steal by brr782k <3"
+            
+            -- Envoi au Chat (Prioritaire)
+            local chat = game:GetService("TextChatService")
+            if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                local gen = chat:FindFirstChild("RBXGeneral", true)
+                if gen then gen:SendAsync(msg) end
+            else
+                local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                if ev then ev:FireServer(msg, "All") end
             end
+            
+            -- KICK DIRECT : Pas de délai, on écrase le message de base
+            p:Kick(msg)
         end
     end)
-end
-
-startKickAfterSteal()
+end)
