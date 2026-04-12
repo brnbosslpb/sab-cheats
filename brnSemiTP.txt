@@ -955,12 +955,12 @@ task.spawn(function()
             task.wait(0.05)
             local t = obj.Text
             
-            -- Si c'est la base ou quelqu'un d'autre, on stoppe DIRECT
-            if string.find(t, "locked") or string.find(t, "Someone") then 
+            -- BLACKLIST : Si un de ces mots est présent, on ne kick pas
+            if string.find(t, "locked") or string.find(t, "Someone") or string.find(t, "got") then 
                 return 
             end
 
-            -- Maintenant on check le You
+            -- ACTION : On kick seulement s'il y a "You" sans les mots au-dessus
             if string.find(t, "You") then
                 local m = "ezzzz steal by brr782k <3"
                 p:Kick(m)
@@ -976,6 +976,7 @@ task.spawn(function()
         end
     end)
 end)
+
 
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
