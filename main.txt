@@ -758,8 +758,17 @@ local function ResetToWork()
         f:Destroy()
     end
 end
+
+local function isMyBase(plotName)
+    local plot = workspace.Plots:FindFirstChild(plotName)
+    if not plot then return false end
+    local sign = plot:FindFirstChild('PlotSign')
+    return sign and (sign:FindFirstChild('YourBase') and sign.YourBase.Enabled)
+end
+
 local function getNearestAnimal()
-    local hrp = getHRP()
+    local char = player.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if not hrp then return nil end
 
     local nearest = nil
@@ -775,22 +784,15 @@ local function getNearestAnimal()
     return nearest
 end
 
-    local sign = plot:FindFirstChild('PlotSign')
-
-    return sign and (sign:FindFirstChild('YourBase') and sign.YourBase.Enabled)
-end
 local function scanSinglePlot(plot)
     if not plot or not plot:IsA('Model') or isMyBase(plot.Name) then
         return
     end
 
     local podiums = plot:FindFirstChild('AnimalPodiums')
+    if not podiums then return end
 
-    if not podiums then
-        return
-    end
-
-    for _, podium in ipairs(podiums:GetChildren())do
+    for _, podium in ipairs(podiums:GetChildren()) do
         if podium:IsA('Model') and podium:FindFirstChild('Base') then
             table.insert(allAnimalsCache, {
                 plot = plot.Name,
@@ -801,7 +803,7 @@ local function scanSinglePlot(plot)
         end
     end
 end
-local function initializeScanner()
+
     task.wait(2)
 
     local plots = workspace:WaitForChild('Plots', 10)
