@@ -642,12 +642,12 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
         for _, fn in ipairs(data.holdCallbacks) do task.spawn(fn) end
         local startTime = tick()
         local tpDone = false
-        local potionDone = false -- Pour ne boire la potion qu'une fois
+        local potionDone = false
         
         while tick() - startTime < 1.3 do
             StealProgress = (tick() - startTime) / 1.3
             
-            -- 1. BOIRE LA POTION (à 0.65, soit juste avant le TP de 0.73)
+            -- POTION GIANT (0.65)
             if StealProgress >= 0.65 and not potionDone then
                 potionDone = true
                 if _G.AutoPotion then
@@ -664,23 +664,23 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
                 end
             end
 
-            -- 2. LE TP AU BRAINROT (à 0.73)
+            -- TP AUTO (0.73)
             if StealProgress >= 0.73 and not tpDone then
                 tpDone = true
                 local hrp = getHRP()
                 if hrp then
                     hrp.CFrame = sequence[1]
-                    task.wait(0.05) -- Réduit de 0.1 à 0.05 pour plus de speed
+                    task.wait(0.05)
                     hrp.CFrame = sequence[2]
-                    task.wait(0.2)
+                    task.wait(0.1)
                     
-                    -- RETOUR À LA BASE
+                    -- RETOUR BASE IMMEDIAT
                     local d1 = (hrp.Position - pos1).Magnitude
                     local d2 = (hrp.Position - pos2).Magnitude
                     hrp.CFrame = CFrame.new(d1 < d2 and pos1 or pos2)
                 end
             end
-            task.wait(0.05)
+            task.wait(0.02)
         end
         
         StealProgress = 1
@@ -694,7 +694,6 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
     end)
     return true
 end
-
 
 -- Progress bar update
 task.spawn(function()
