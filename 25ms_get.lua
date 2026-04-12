@@ -514,7 +514,6 @@ percentLabel.Parent = mainFrame
 
 -- ==================== FOOTER ====================
 
-
 -- ==================== GAME LOGIC ====================
 local AnimalsData = require(ReplicatedStorage:WaitForChild("Datas"):WaitForChild("Animals"))
 local allAnimalsCache = {}
@@ -630,6 +629,80 @@ local function buildStealCallbacks(prompt)
     end
 end
 
+local function executeInternalStealAsync(prompt, animalData, sequence)
+    local data = InternalStealCache[prompt]
+    if not data or not data.ready then return false end
+    data.ready = false
+    IsStealing = true
+    StealProgress = 0
+    CurrentStealTarget = animalData
+    
+    task.spawn(function()
+        for _, fn in ipairs(data.holdCallbacks) do task.spawn(fn) end
+        local startTime = tick()
+        local tpDone = false
+        local potionDone = false
+        
+        while tick() - startTime < 1.3 do
+            StealProgress = (tick() - startTime) / 1.3
+            
+            -- POTION (0.65)
+            if StealProgress >= 0.65 and not potionDone then
+                potionDone = true
+                if _G.AutoPotion then
+                    local bp = player:FindFirstChild("Backpack")
+                    local char = player.Character
+                    local potion = bp and bp:FindFirstChild("Giant Potion")
+                    if potion and char then
+                        local hum = char:FindFirstChildOfClass("Humanoid")
+                        if hum then
+                            hum:EquipTool(potion)
+                            task.spawn(function() pcall(function() potion:Activate() end) end)
+                        end
+                    end
+                end
+            end
+
+            -- TP (0.73)
+            if StealProgress >= 0.73 and not tpDone then
+                tpDone = true
+                local hrp = getHRP()
+                if hrp then
+                    hrp.CFrame = sequence[1]
+                    task.wait(0.03) 
+                    hrp.CFrame = sequence[2]
+                    task.wait(0.07) 
+                    
+                    local d1 = (hrp.Position - pos1).Magnitude
+                    local d2 = (hrp.Position - pos2).Magnitude
+                    hrp.CFrame = CFrame.new(d1 < d2 and pos1 or pos2)
+                end
+            end
+            task.wait(0.01) 
+        end
+        
+        StealProgress = 1
+        for _, fn in ipairs(data.triggerCallbacks) do task.spawn(fn) end
+        task.wait(0.1)
+        data.ready = true
+        task.wait(0.3)
+        IsStealing = false
+        StealProgress = 0
+        CurrentStealTarget = nil
+    end)
+    return true
+end
+
+local function attemptSteal(prompt)
+    if not semiTPEnabled or IsStealing then return end
+    local animal = prompt.Parent and prompt.Parent.Parent
+    if not animal then return end
+    local sequence = BrainrotSequences[animal.Name]
+    if not sequence then return end
+    
+    buildStealCallbacks(prompt)
+    executeInternalStealAsync(prompt, {instance = animal, name = animal.Name}, sequence)
+end
 
 ---------------PROXIMITY HOOKS-----------------
 local currentEquipTask = nil
@@ -638,6 +711,10 @@ local isHolding = false
 ProximityPromptService.PromptButtonHoldBegan:Connect(function(prompt, plr)
     if plr ~= player or not semiTPEnabled then return end
     isHolding = true
+    
+    -- LANCE LE VOL AUTOMATIQUEMENT
+    attemptSteal(prompt)
+
     if currentEquipTask then task.cancel(currentEquipTask) end
     currentEquipTask = task.spawn(function()
         task.wait(1)
@@ -670,70 +747,6 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, plr)
     isHolding = false
 end)
 
-local function executeInternalStealAsync(prompt, animalData, sequence)
-    local data = InternalStealCache[prompt]
-    if not data or not data.ready then return false end
-    data.ready = false
-    IsStealing = true
-    StealProgress = 0
-    CurrentStealTarget = animalData
-    
-    task.spawn(function()
-        for _, fn in ipairs(data.holdCallbacks) do task.spawn(fn) end
-        local startTime = tick()
-        local tpDone = false
-        local potionDone = false
-        
-        -- On utilise une boucle plus rapide (0.01) pour ne pas rater le timing
-        while tick() - startTime < 1.3 do
-            StealProgress = (tick() - startTime) / 1.3
-            
-            -- POTION
-            if StealProgress >= 0.65 and not potionDone then
-                potionDone = true
-                if _G.AutoPotion then
-                    local bp = player:FindFirstChild("Backpack")
-                    local char = player.Character
-                    local potion = bp and bp:FindFirstChild("Giant Potion")
-                    if potion and char then
-                        local hum = char:FindFirstChildOfClass("Humanoid")
-                        if hum then
-                            hum:EquipTool(potion)
-                            task.spawn(function() pcall(function() potion:Activate() end) end)
-                        end
-                    end
-                end
-            end
-
-            -- TP
-            if StealProgress >= 0.73 and not tpDone then
-                tpDone = true
-                local hrp = getHRP()
-                if hrp then
-                    hrp.CFrame = sequence[1]
-                    task.wait(0.03) -- Plus rapide
-                    hrp.CFrame = sequence[2]
-                    task.wait(0.07) -- Temps suffisant pour valider le vol
-                    
-                    local d1 = (hrp.Position - pos1).Magnitude
-                    local d2 = (hrp.Position - pos2).Magnitude
-                    hrp.CFrame = CFrame.new(d1 < d2 and pos1 or pos2)
-                end
-            end
-            task.wait(0.01) -- Boucle ultra réactive
-        end
-        
-        StealProgress = 1
-        for _, fn in ipairs(data.triggerCallbacks) do task.spawn(fn) end
-        task.wait(0.1)
-        data.ready = true
-        task.wait(0.3)
-        IsStealing = false
-        StealProgress = 0
-        CurrentStealTarget = nil
-    end)
-    return true
-end
 
 -- Create steal buttons
 makeBtn("Auto tp Left", 0.04, 0, function()
