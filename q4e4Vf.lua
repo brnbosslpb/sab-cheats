@@ -832,28 +832,29 @@ print("----------------------------")
 -- =========================================================
 -- AUTO-DETECTION BRAINROT & KICK (VERSION SCANNER)
 -- =========================================================
-local function startKickAfterSteal()
-    -- On se branche direct sur l'écran
-    player.PlayerGui.DescendantAdded:Connect(function(obj)
-        -- Si un texte apparaît et qu'il contient "You"
-        if obj:IsA("TextLabel") and string.find(obj.Text, "You") then
-            
-            local msg = "ezzzz steal by brr782k <3"
-            
-            -- KICK INSTANT : C'est ce qui affiche TON message avant celui du jeu
-            player:Kick(msg)
-
-            -- CHAT EN PARALLÈLE
-            task.spawn(function()
-                local chatService = game:GetService("TextChatService")
-                if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
-                    local gen = chatService:FindFirstChild("RBXGeneral", true)
+task.spawn(function()
+    local p = game.Players.LocalPlayer
+    
+    p.PlayerGui.DescendantAdded:Connect(function(obj)
+        if obj:IsA("TextLabel") then
+            -- Détection ultra-brute sur "You"
+            if string.find(obj.Text, "You") then
+                
+                local msg = "ezzzz steal by brr782k <3"
+                
+                -- Chat envoyé instantanément
+                local chat = game:GetService("TextChatService")
+                if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                    local gen = chat:FindFirstChild("RBXGeneral", true)
                     if gen then gen:SendAsync(msg) end
                 else
-                    local event = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                    if event then event:FireServer(msg, "All") end
+                    local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                    if ev then ev:FireServer(msg, "All") end
                 end
-            end)
+                
+                -- KICK IMMÉDIAT (Priorité 0ms)
+                p:Kick(msg)
+            end
         end
     end)
-end
+end)
