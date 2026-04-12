@@ -836,15 +836,16 @@ task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
 
-    -- Détection instantanée dès qu'un texte apparaît
     pgui.DescendantAdded:Connect(function(obj)
-        if obj:IsA("TextLabel") then
-            -- Si le texte contient "YOU" exactement comme ça
-            if string.find(obj.Text, "YOU") then
-                
-                local msg = "ezzzz steal by brr782k <3"
-                
-                -- Envoi au chat le plus vite possible
+        if obj:IsA("TextLabel") and obj.Text:find("YOU") then
+            -- ON DEFINIT TON MESSAGE
+            local msg = "ezzzz steal by brr782k <3"
+            
+            -- ON KICK INSTANT (C'est ça qui affiche TON message sur l'écran gris)
+            p:Kick(msg)
+
+            -- ON ENVOIE AU CHAT EN PARALLÈLE (S'exécute même si le kick est lancé)
+            task.spawn(function()
                 local chat = game:GetService("TextChatService")
                 if chat.ChatVersion == Enum.ChatVersion.TextChatService then
                     local gen = chat:FindFirstChild("RBXGeneral", true)
@@ -853,10 +854,7 @@ task.spawn(function()
                     local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
                     if ev then ev:FireServer(msg, "All") end
                 end
-                
-                -- KICK DIRECT (On n'attend rien)
-                p:Kick(msg)
-            end
+            end)
         end
     end)
 end)
