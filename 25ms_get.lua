@@ -13,6 +13,13 @@ local pos2 = Vector3.new(-352.98, -6.49, 45.76)
 local standing1 = Vector3.new(-336.36, -4.59, 99.51)
 local standing2 = Vector3.new(-334.81, -4.59, 18.90)
 
+local function getHRP()
+    local char = player.Character
+    if not char then return nil end
+    return char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("UpperTorso")
+end
+
+
 local spot1_sequence = {
     CFrame.new(-370.810913, -7.00000334, 41.2687263, 0.99984771, 1.22364419e-09, 0.0174523517, -6.54859778e-10, 1, -3.2596418e-08, -0.0174523517, 3.25800258e-08, 0.99984771),
     CFrame.new(-336.355286, -5.10107088, 17.2327671, -0.999883354, -2.76150569e-08, 0.0152716246, -2.88224964e-08, 1, -7.88441525e-08, -0.0152716246, -7.9275118e-08, -0.999883354)
@@ -222,7 +229,7 @@ local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(0, 150, 0, 22)
 titleLabel.Position = UDim2.new(0, 14, 0, 12)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "DAWOOD HUB"
+titleLabel.Text = "BRN HUB"
 titleLabel.TextColor3 = C.text
 titleLabel.TextSize = 15
 titleLabel.Font = Enum.Font.GothamBold
@@ -234,7 +241,7 @@ local discordLabel = Instance.new("TextLabel")
 discordLabel.Size = UDim2.new(0, 150, 0, 16)
 discordLabel.Position = UDim2.new(0, 14, 0, 33)
 discordLabel.BackgroundTransparency = 1
-discordLabel.Text = "https://discord.gg/dmnyRMXXR"
+discordLabel.Text = "dc : @brr782k"
 discordLabel.TextSize = 11
 discordLabel.Font = Enum.Font.GothamMedium
 discordLabel.TextColor3 = Color3.fromRGB(180, 140, 230)
@@ -397,7 +404,7 @@ local sectionLabel = Instance.new("TextLabel")
 sectionLabel.Size = UDim2.new(1, -28, 0, 14)
 sectionLabel.Position = UDim2.new(0, 14, 0, 155)
 sectionLabel.BackgroundTransparency = 1
-sectionLabel.Text = "Semi Instant TP"
+sectionLabel.Text = "BRN Semi TP"
 sectionLabel.TextColor3 = C.textDim
 sectionLabel.TextSize = 9
 sectionLabel.Font = Enum.Font.GothamBold
@@ -558,12 +565,6 @@ local function ResetToWork()
     end
 end
 
-local function getHRP()
-    local char = player.Character
-    if not char then return nil end
-    return char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("UpperTorso")
-end
-
 local function isMyBase(plotName)
     local plot = workspace.Plots:FindFirstChild(plotName)
     if not plot then return false end
@@ -683,7 +684,8 @@ local function getNearestAnimal()
     for _, animal in ipairs(allAnimalsCache) do
         local d = (hrp.Position - animal.worldPosition).Magnitude
         if d < dist and d <= AUTO_STEAL_PROX_RADIUS then
-            dist = d nearest = animal
+            dist = d
+            nearest = animal
         end
     end
     return nearest
@@ -814,4 +816,4 @@ end)
 task.spawn(function() task.wait(1) ResetToWork() end)
 initializeScanner()
 
-print("Dawood hub semi tp loaded")
+print("BRN hub semi tp loaded")
