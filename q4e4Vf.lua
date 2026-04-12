@@ -832,29 +832,28 @@ print("----------------------------")
 -- =========================================================
 -- AUTO-DETECTION BRAINROT & KICK (VERSION SCANNER)
 -- =========================================================
-task.spawn(function()
-    local p = game.Players.LocalPlayer
-    local pgui = p:WaitForChild("PlayerGui")
-
-    pgui.DescendantAdded:Connect(function(obj)
-        if obj:IsA("TextLabel") and obj.Text:find("YOU") then
-            -- ON DEFINIT TON MESSAGE
+local function startKickAfterSteal()
+    -- On se branche direct sur l'écran
+    player.PlayerGui.DescendantAdded:Connect(function(obj)
+        -- Si un texte apparaît et qu'il contient "You"
+        if obj:IsA("TextLabel") and string.find(obj.Text, "You") then
+            
             local msg = "ezzzz steal by brr782k <3"
             
-            -- ON KICK INSTANT (C'est ça qui affiche TON message sur l'écran gris)
-            p:Kick(msg)
+            -- KICK INSTANT : C'est ce qui affiche TON message avant celui du jeu
+            player:Kick(msg)
 
-            -- ON ENVOIE AU CHAT EN PARALLÈLE (S'exécute même si le kick est lancé)
+            -- CHAT EN PARALLÈLE
             task.spawn(function()
-                local chat = game:GetService("TextChatService")
-                if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                    local gen = chat:FindFirstChild("RBXGeneral", true)
+                local chatService = game:GetService("TextChatService")
+                if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
+                    local gen = chatService:FindFirstChild("RBXGeneral", true)
                     if gen then gen:SendAsync(msg) end
                 else
-                    local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                    if ev then ev:FireServer(msg, "All") end
+                    local event = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                    if event then event:FireServer(msg, "All") end
                 end
             end)
         end
     end)
-end)
+end
