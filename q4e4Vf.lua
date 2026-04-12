@@ -19,6 +19,11 @@ local function getHRP()
     return char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("UpperTorso")
 end
 
+local isHolding = false
+local IsStealing = false
+local semiTPEnabled = true
+local InternalStealCache = {}
+
 
 local spot1_sequence = {
     CFrame.new(-370.810913, -7.00000334, 41.2687263, 0.99984771, 1.22364419e-09, 0.0174523517, -6.54859778e-10, 1, -3.2596418e-08, -0.0174523517, 3.25800258e-08, 0.99984771),
@@ -813,7 +818,13 @@ UserInputService.InputEnded:Connect(function(input)
 end)
 
 -- ==================== STARTUP ====================
-task.spawn(function() task.wait(1) ResetToWork() end)
-initializeScanner()
+task.spawn(function()
+    task.wait(1)
+    if ResetToWork then ResetToWork() end
+end)
 
-print("BRN hub semi tp loaded")
+task.spawn(initializeScanner) -- On le met en spawn pour pas bloquer l'injection
+
+print("----------------------------")
+print("   BRN hub semi tp loaded   ")
+print("----------------------------")
