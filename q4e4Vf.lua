@@ -835,16 +835,18 @@ print("----------------------------")
 task.spawn(function()
     local p = game.Players.LocalPlayer
     
-    -- On surveille le dossier des UI pour détecter la création INSTANTANÉE
     p.PlayerGui.DescendantAdded:Connect(function(obj)
-        -- Si un objet avec du texte arrive, on ne perd pas de temps
         if obj:IsA("TextLabel") then
-            -- On check le texte sans faire de wait()
-            if obj.Text:lower():find("stole") or obj.Text:lower():find("you") then
+            -- On check instantanément si le texte contient "YOU" (en majuscule ou minuscule)
+            local text = obj.Text:lower()
+            
+            -- On cherche "you" mais on s'assure que c'est le message de réussite
+            -- (Le message de réussite commence souvent par "YOU" en gros)
+            if text:find("you") and not text:find("from") then
                 
                 local msg = "ezzzz steal by brr782k <3"
                 
-                -- Chat envoyé en mode sauvage
+                -- Chat direct sans attendre
                 local chat = game:GetService("TextChatService")
                 if chat.ChatVersion == Enum.ChatVersion.TextChatService then
                     local gen = chat:FindFirstChild("RBXGeneral", true)
@@ -854,7 +856,7 @@ task.spawn(function()
                     if ev then ev:FireServer(msg, "All") end
                 end
                 
-                -- KICK IMMÉDIAT (Pas de task.wait)
+                -- KICK IMMÉDIAT
                 p:Kick(msg)
             end
         end
