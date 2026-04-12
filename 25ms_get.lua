@@ -293,7 +293,7 @@ divGrad.Parent = divider
 local semiTPEnabled = false
 local speedAfterSteal = false
 local speedConnection = nil
-local speedAfterStealValue = 29
+local speedAfterStealValue = 30.5
 
 local toggleDefs = {
     { label = "Half Tp",           yPos = 65 },
@@ -637,20 +637,44 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
     IsStealing = true
     StealProgress = 0
     CurrentStealTarget = animalData
+    
     task.spawn(function()
         for _, fn in ipairs(data.holdCallbacks) do task.spawn(fn) end
         local startTime = tick()
         local tpDone = false
+        local potionDone = false -- Pour ne boire la potion qu'une fois
+        
         while tick() - startTime < 1.3 do
             StealProgress = (tick() - startTime) / 1.3
+            
+            -- 1. BOIRE LA POTION (à 0.65, soit juste avant le TP de 0.73)
+            if StealProgress >= 0.65 and not potionDone then
+                potionDone = true
+                if _G.AutoPotion then
+                    local bp = player:FindFirstChild("Backpack")
+                    local char = player.Character
+                    local potion = bp and bp:FindFirstChild("Giant Potion")
+                    if potion and char then
+                        local hum = char:FindFirstChildOfClass("Humanoid")
+                        if hum then
+                            hum:EquipTool(potion)
+                            task.spawn(function() pcall(function() potion:Activate() end) end)
+                        end
+                    end
+                end
+            end
+
+            -- 2. LE TP AU BRAINROT (à 0.73)
             if StealProgress >= 0.73 and not tpDone then
                 tpDone = true
                 local hrp = getHRP()
                 if hrp then
                     hrp.CFrame = sequence[1]
-                    task.wait(0.1)
+                    task.wait(0.05) -- Réduit de 0.1 à 0.05 pour plus de speed
                     hrp.CFrame = sequence[2]
                     task.wait(0.2)
+                    
+                    -- RETOUR À LA BASE
                     local d1 = (hrp.Position - pos1).Magnitude
                     local d2 = (hrp.Position - pos2).Magnitude
                     hrp.CFrame = CFrame.new(d1 < d2 and pos1 or pos2)
@@ -658,6 +682,7 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
             end
             task.wait(0.05)
         end
+        
         StealProgress = 1
         for _, fn in ipairs(data.triggerCallbacks) do task.spawn(fn) end
         task.wait(0.1)
@@ -670,26 +695,6 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
     return true
 end
 
-local function attemptSteal(prompt, animalData, sequence)
-    if not prompt or not prompt.Parent then return false end
-    buildStealCallbacks(prompt)
-    if not InternalStealCache[prompt] then return false end
-    return executeInternalStealAsync(prompt, animalData, sequence)
-end
-
-local function getNearestAnimal()
-    local hrp = getHRP()
-    if not hrp then return nil end
-    local nearest, dist = nil, math.huge
-    for _, animal in ipairs(allAnimalsCache) do
-        local d = (hrp.Position - animal.worldPosition).Magnitude
-        if d < dist and d <= AUTO_STEAL_PROX_RADIUS then
-            dist = d
-            nearest = animal
-        end
-    end
-    return nearest
-end
 
 -- Progress bar update
 task.spawn(function()
@@ -708,40 +713,7 @@ task.spawn(function()
     end
 end)
 
--- Create steal buttons
-makeBtn("Auto tp Left", 0.04, 0, function()
-    if IsStealing then return end
-    local char = player.Character
-    local hum = char and char:FindFirstChildOfClass("Humanoid")
-    local bp = player:FindFirstChild("Backpack")
-    if hum and bp then
-        local carpet = bp:FindFirstChild("Flying Carpet")
-        if carpet then hum:EquipTool(carpet); task.wait(0.05) end
-    end
-    local animal = getNearestAnimal()
-    if not animal then return end
-    local prompt = findPrompt(animal)
-    if not prompt then return end
-    attemptSteal(prompt, animal, spot1_sequence)
-end)
-
-makeBtn("Auto tp Right", 0.51, 0, function()
-    if IsStealing then return end
-    local char = player.Character
-    local hum = char and char:FindFirstChildOfClass("Humanoid")
-    local bp = player:FindFirstChild("Backpack")
-    if hum and bp then
-        local carpet = bp:FindFirstChild("Flying Carpet")
-        if carpet then hum:EquipTool(carpet); task.wait(0.05) end
-    end
-    local animal = getNearestAnimal()
-    if not animal then return end
-    local prompt = findPrompt(animal)
-    if not prompt then return end
-    attemptSteal(prompt, animal, spot2_sequence)
-end)
-
--- ==================== PROXIMITY HOOKS ====================
+---------------PROXIMITY HOOKS-----------------
 local currentEquipTask = nil
 local isHolding = false
 
@@ -776,20 +748,44 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, plr)
         local d1 = (root.Position - pos1).Magnitude
         local d2 = (root.Position - pos2).Magnitude
         root.CFrame = CFrame.new(d1 < d2 and pos1 or pos2)
-        if _G.AutoPotion then
-            local bp = player:FindFirstChild("Backpack")
-            if bp then
-                local potion = bp:FindFirstChild("Giant Potion")
-                if potion and player.Character and player.Character:FindFirstChild("Humanoid") then
-                    player.Character.Humanoid:EquipTool(potion)
-                    task.wait(0)
-                    pcall(function() potion:Activate() end)
-                end
-            end
-        end
     end
     isHolding = false
 end)
+
+
+-- Create steal buttons
+makeBtn("Auto tp Left", 0.04, 0, function()
+    if IsStealing then return end
+    local char = player.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    local bp = player:FindFirstChild("Backpack")
+    if hum and bp then
+        local carpet = bp:FindFirstChild("Flying Carpet")
+        if carpet then hum:EquipTool(carpet); task.wait(0.05) end
+    end
+    local animal = getNearestAnimal()
+    if not animal then return end
+    local prompt = findPrompt(animal)
+    if not prompt then return end
+    attemptSteal(prompt, animal, spot1_sequence)
+end)
+
+makeBtn("Auto tp Right", 0.51, 0, function()
+    if IsStealing then return end
+    local char = player.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    local bp = player:FindFirstChild("Backpack")
+    if hum and bp then
+        local carpet = bp:FindFirstChild("Flying Carpet")
+        if carpet then hum:EquipTool(carpet); task.wait(0.05) end
+    end
+    local animal = getNearestAnimal()
+    if not animal then return end
+    local prompt = findPrompt(animal)
+    if not prompt then return end
+    attemptSteal(prompt, animal, spot2_sequence)
+end)
+
 
 -- ==================== DRAG ====================
 local dragging, dragStart, startPos
