@@ -391,59 +391,47 @@ end
 createToggleRow(toggleDefs[1], function(s)
     semiTPEnabled = s
 end)
+
 createToggleRow(toggleDefs[2], function(s)
     speedAfterSteal = s
-end)
-
+    
+    if speedConnection then
+        speedConnection:Disconnect()
+        speedConnection = nil
+    end
 
     if s then
-        if speedConnection then
-            speedConnection:Disconnect()
-        end
-
-        RunService.Heartbeat:Connect(function()
-            if not speedAfterSteal then
-                return
-            end
-            if not player:GetAttribute('Stealing') then
+        speedConnection = RunService.Heartbeat:Connect(function()
+            if not speedAfterSteal or not player:GetAttribute('Stealing') then
                 return
             end
 
             local char = player.Character
-
-            if not player.Character then
-                return
-            end
+            if not char then return end
 
             local humanoid = char:FindFirstChildOfClass('Humanoid')
             local root = char:FindFirstChild('HumanoidRootPart')
 
-            if not humanoid or not root then
-                return
-            end
-
-            local moveDir = humanoid.MoveDirection
-
-            if humanoid.MoveDirection.Magnitude == 0 then
+            if not humanoid or not root or humanoid.MoveDirection.Magnitude == 0 then
                 return
             end
 
             local params = RaycastParams.new()
-
             params.FilterType = Enum.RaycastFilterType.Exclude
             params.FilterDescendantsInstances = {char}
 
             local grounded = workspace:Raycast(root.Position, Vector3.new(0, -4, 0), params) ~= nil
-            local smoothed = (Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z)):Lerp(moveDir.Unit * speedAfterStealValue, grounded and 0.35 or 0.25)
+            local moveDir = humanoid.MoveDirection
+            local currentVel = Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z)
+            
+            -- Vitesse fixée à 30 ici
+            local smoothed = currentVel:Lerp(moveDir.Unit * 30, grounded and 0.35 or 0.25)
 
             root.AssemblyLinearVelocity = Vector3.new(smoothed.X, root.AssemblyLinearVelocity.Y, smoothed.Z)
         end)
-    else
-        if speedConnection then
-            speedConnection:Disconnect()
-        end
     end
 end)
+
 createToggleRow(toggleDefs[3], function(s)
     _G.AutoPotion = s
 end)
