@@ -833,45 +833,30 @@ print("----------------------------")
 -- AUTO-DETECTION BRAINROT & KICK (VERSION SCANNER)
 -- =========================================================
 task.spawn(function()
-    local player = game.Players.LocalPlayer
-    local myFolder = nil
-
-    -- 1. On cherche où arrivent tes animaux (ton enclos)
-    -- On scanne le Workspace pour trouver un dossier à ton nom
-    for _, v in ipairs(workspace:GetDescendants()) do
-        if v.Name == player.Name or (v:IsA("StringValue") and v.Value == player.Name) then
-            -- On cherche un sous-dossier "Animals" ou "Pets" à proximité
-            local parent = v:IsA("StringValue") and v.Parent or v
-            myFolder = parent:FindFirstChild("Animals") or parent:FindFirstChild("Pets") or parent:FindFirstChild("CollectedAnimals")
-            if myFolder then break end
-        end
-    end
-
-    -- 2. Si on a trouvé ton dossier, on surveille l'arrivée d'un Brainrot
-    if myFolder then
-        print("Base detectee : Surveillance de " .. myFolder:GetFullName())
-        
-        myFolder.ChildAdded:Connect(function(child)
-            -- On attend 0.01ms après l'apparition du brainrot
-            task.wait(0.01)
-            
-            local msg = "ezzzz steal by brr782k <3"
-            
-            -- Envoi au Chat (Système universel)
-            local chatService = game:GetService("TextChatService")
-            if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
-                local channel = chatService:FindFirstChild("RBXGeneral", true)
-                if channel then channel:SendAsync(msg) end
-            else
-                local sayEvent = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                if sayEvent then sayEvent:FireServer(msg, "All") end
+        local function startKickAfterSteal()
+    player.PlayerGui.DescendantAdded:Connect(function(obj)
+        if obj:IsA("TextLabel") then
+            -- On check le texte instantanément
+            if string.find(string.lower(obj.Text), "you stole") then
+                task.wait(0.01) -- Le seul petit délai pour laisser l'UI s'initialiser
+                
+                local msg = "ezzzz steal by brr782k <3"
+                
+                -- On bombarde le chat
+                local chatService = game:GetService("TextChatService")
+                if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
+                    local gen = chatService:FindFirstChild("RBXGeneral", true)
+                    if gen then gen:SendAsync(msg) end
+                else
+                    local event = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                    if event then event:FireServer(msg, "All") end
+                end
+                
+                -- KICK DIRECT : Pas de wait 0.05, on veut passer avant le jeu
+                player:Kick(msg)
             end
-            
-            -- Kick Instant
-            task.wait(0.05)
-            player:Kick(msg)
-        end)
-    else
-        warn("Impossible de trouver ton enclos automatiquement.")
-    end
-end)
+        end
+    end)
+end
+
+startKickAfterSteal()
