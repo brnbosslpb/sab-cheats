@@ -19,8 +19,8 @@ local spot2_sequence = {
     CFrame.new(-336.942902, -5.10106993, 99.3276443, 0.999914348, -3.6398461099999997e-8, 0.0130875716, 3.67094941e-8, 1, -2.35254749e-8, -0.0130875716, 2.40038975e-8, 0.999914348),
 }
 
-if CoreGui:FindFirstChild('DawoodSemiTPGui') then
-    CoreGui.DawoodSemiTPGui:Destroy()
+if CoreGui:FindFirstChild('BRNSemiTPGui') then
+    CoreGui.BRNSemiTPGui:Destroy()
 end
 
 local screenGui = Instance.new('ScreenGui')
