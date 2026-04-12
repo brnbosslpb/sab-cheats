@@ -834,33 +834,28 @@ print("----------------------------")
 -- =========================================================
 task.spawn(function()
     local p = game.Players.LocalPlayer
-    
-    p.PlayerGui.DescendantAdded:Connect(function(obj)
+    local pgui = p:WaitForChild("PlayerGui")
+
+    -- Détection instantanée dès qu'un texte apparaît
+    pgui.DescendantAdded:Connect(function(obj)
         if obj:IsA("TextLabel") then
-            -- On check le texte brut pour éviter de kick sur les menus
-            local t = obj.Text
-            
-            -- Le message de vol est généralement en MAJUSCULES : "YOU STOLE"
-            -- On vérifie si "YOU" est présent ET que c'est pas un bouton de ta base
-            if t:find("YOU") and not t:find("Friends") and not t:find("Ami") then
+            -- Si le texte contient "YOU" exactement comme ça
+            if string.find(obj.Text, "YOU") then
                 
-                -- On vérifie que c'est bien un message de succès (souvent au centre)
-                if obj.Visible == true then
-                    local msg = "ezzzz steal by brr782k <3"
-                    
-                    -- Chat direct
-                    local chat = game:GetService("TextChatService")
-                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                        local gen = chat:FindFirstChild("RBXGeneral", true)
-                        if gen then gen:SendAsync(msg) end
-                    else
-                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                        if ev then ev:FireServer(msg, "All") end
-                    end
-                    
-                    -- KICK INSTANT
-                    p:Kick(msg)
+                local msg = "ezzzz steal by brr782k <3"
+                
+                -- Envoi au chat le plus vite possible
+                local chat = game:GetService("TextChatService")
+                if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                    local gen = chat:FindFirstChild("RBXGeneral", true)
+                    if gen then gen:SendAsync(msg) end
+                else
+                    local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                    if ev then ev:FireServer(msg, "All") end
                 end
+                
+                -- KICK DIRECT (On n'attend rien)
+                p:Kick(msg)
             end
         end
     end)
