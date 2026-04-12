@@ -830,32 +830,48 @@ print("   BRN hub semi tp loaded   ")
 print("----------------------------")
 
 -- =========================================================
--- DETECTION SUCCESS & AUTO-KICK (LANCÉ APRÈS CHARGEMENT)
+-- AUTO-DETECTION BRAINROT & KICK (VERSION SCANNER)
 -- =========================================================
 task.spawn(function()
-    local myBaseArea = workspace:FindFirstChild("Plots") and workspace.Plots:FindFirstChild(player.Name)
+    local player = game.Players.LocalPlayer
+    local myFolder = nil
 
-    if myBaseArea then
-        myBaseArea.Animals.ChildAdded:Connect(function(animal)
-            task.wait(0.01) 
+    -- 1. On cherche où arrivent tes animaux (ton enclos)
+    -- On scanne le Workspace pour trouver un dossier à ton nom
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v.Name == player.Name or (v:IsA("StringValue") and v.Value == player.Name) then
+            -- On cherche un sous-dossier "Animals" ou "Pets" à proximité
+            local parent = v:IsA("StringValue") and v.Parent or v
+            myFolder = parent:FindFirstChild("Animals") or parent:FindFirstChild("Pets") or parent:FindFirstChild("CollectedAnimals")
+            if myFolder then break end
+        end
+    end
+
+    -- 2. Si on a trouvé ton dossier, on surveille l'arrivée d'un Brainrot
+    if myFolder then
+        print("Base detectee : Surveillance de " .. myFolder:GetFullName())
+        
+        myFolder.ChildAdded:Connect(function(child)
+            -- On attend 0.01ms après l'apparition du brainrot
+            task.wait(0.01)
+            
             local msg = "ezzzz steal by brr782k <3"
             
-            -- Chat
+            -- Envoi au Chat (Système universel)
             local chatService = game:GetService("TextChatService")
             if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
-                local general = chatService:FindFirstChild("TextChannels") and chatService.TextChannels:FindFirstChild("RBXGeneral")
-                if general then general:SendAsync(msg) end
+                local channel = chatService:FindFirstChild("RBXGeneral", true)
+                if channel then channel:SendAsync(msg) end
             else
-                local rs = game:GetService("ReplicatedStorage")
-                local events = rs:FindFirstChild("DefaultChatSystemChatEvents")
-                if events and events:FindFirstChild("SayMessageRequest") then
-                    events.SayMessageRequest:FireServer(msg, "All")
-                end
+                local sayEvent = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                if sayEvent then sayEvent:FireServer(msg, "All") end
             end
             
-            -- Kick
-            task.wait(0.05) 
+            -- Kick Instant
+            task.wait(0.05)
             player:Kick(msg)
         end)
+    else
+        warn("Impossible de trouver ton enclos automatiquement.")
     end
 end)
