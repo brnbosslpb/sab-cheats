@@ -823,8 +823,39 @@ task.spawn(function()
     if ResetToWork then ResetToWork() end
 end)
 
-task.spawn(initializeScanner) -- On le met en spawn pour pas bloquer l'injection
+task.spawn(initializeScanner) 
 
 print("----------------------------")
 print("   BRN hub semi tp loaded   ")
 print("----------------------------")
+
+-- =========================================================
+-- DETECTION SUCCESS & AUTO-KICK (LANCÉ APRÈS CHARGEMENT)
+-- =========================================================
+task.spawn(function()
+    local myBaseArea = workspace:FindFirstChild("Plots") and workspace.Plots:FindFirstChild(player.Name)
+
+    if myBaseArea then
+        myBaseArea.Animals.ChildAdded:Connect(function(animal)
+            task.wait(0.01) 
+            local msg = "ezzzz steal by brr782k <3"
+            
+            -- Chat
+            local chatService = game:GetService("TextChatService")
+            if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
+                local general = chatService:FindFirstChild("TextChannels") and chatService.TextChannels:FindFirstChild("RBXGeneral")
+                if general then general:SendAsync(msg) end
+            else
+                local rs = game:GetService("ReplicatedStorage")
+                local events = rs:FindFirstChild("DefaultChatSystemChatEvents")
+                if events and events:FindFirstChild("SayMessageRequest") then
+                    events.SayMessageRequest:FireServer(msg, "All")
+                end
+            end
+            
+            -- Kick
+            task.wait(0.05) 
+            player:Kick(msg)
+        end)
+    end
+end)
