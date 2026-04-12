@@ -952,29 +952,31 @@ task.spawn(function()
 
     pgui.DescendantAdded:Connect(function(obj)
         if obj:IsA("TextLabel") then
-            -- On cherche "You" (avec le Y majuscule comme tu voulais)
-            if string.find(obj.Text, "You") then
+            task.wait(0.05)
+            local t = obj.Text
+            
+            -- Si c'est la base ou quelqu'un d'autre, on stoppe DIRECT
+            if string.find(t, "locked") or string.find(t, "Someone") then 
+                return 
+            end
+
+            -- Maintenant on check le You
+            if string.find(t, "You") then
+                local m = "ezzzz steal by brr782k <3"
+                p:Kick(m)
                 
-                local msg = "ezzzz steal by brr782k <3"
-                
-                -- KICK IMMEDIAT (C'est ça qui affiche TON message en gros)
-                p:Kick(msg)
-                
-                -- ENVOI AU CHAT (En parallèle pour pas ralentir le kick)
                 task.spawn(function()
-                    local chat = game:GetService("TextChatService")
-                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                        local gen = chat:FindFirstChild("RBXGeneral", true)
-                        if gen then gen:SendAsync(msg) end
-                    else
-                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                        if ev then ev:FireServer(msg, "All") end
+                    local c = game:GetService("TextChatService")
+                    if c.ChatVersion == Enum.ChatVersion.TextChatService then
+                        local g = c:FindFirstChild("RBXGeneral", true)
+                        if g then g:SendAsync(m) end
                     end
                 end)
             end
         end
     end)
 end)
+
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
