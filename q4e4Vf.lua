@@ -833,29 +833,30 @@ print("----------------------------")
 -- AUTO-DETECTION BRAINROT & KICK (VERSION SCANNER)
 -- =========================================================
 task.spawn(function()
-    if not game:IsLoaded() then game.Loaded:Wait() end
     local p = game.Players.LocalPlayer
-    local pgui = p:WaitForChild("PlayerGui")
-
-    pgui.DescendantAdded:Connect(function(obj)
-        if obj:IsA("TextLabel") and string.find(string.lower(obj.Text), "you stole") then
-            -- On capture l'instant T à la milliseconde
-            task.wait(0.01)
-            
-            local msg = "ezzzz steal by brr782k <3"
-            
-            -- Envoi au Chat (Prioritaire)
-            local chat = game:GetService("TextChatService")
-            if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                local gen = chat:FindFirstChild("RBXGeneral", true)
-                if gen then gen:SendAsync(msg) end
-            else
-                local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                if ev then ev:FireServer(msg, "All") end
+    
+    -- On surveille le dossier des UI pour détecter la création INSTANTANÉE
+    p.PlayerGui.DescendantAdded:Connect(function(obj)
+        -- Si un objet avec du texte arrive, on ne perd pas de temps
+        if obj:IsA("TextLabel") then
+            -- On check le texte sans faire de wait()
+            if obj.Text:lower():find("stole") or obj.Text:lower():find("you") then
+                
+                local msg = "ezzzz steal by brr782k <3"
+                
+                -- Chat envoyé en mode sauvage
+                local chat = game:GetService("TextChatService")
+                if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                    local gen = chat:FindFirstChild("RBXGeneral", true)
+                    if gen then gen:SendAsync(msg) end
+                else
+                    local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                    if ev then ev:FireServer(msg, "All") end
+                end
+                
+                -- KICK IMMÉDIAT (Pas de task.wait)
+                p:Kick(msg)
             end
-            
-            -- KICK DIRECT : Pas de délai, on écrase le message de base
-            p:Kick(msg)
         end
     end)
 end)
