@@ -834,26 +834,29 @@ print("----------------------------")
 -- =========================================================
 task.spawn(function()
     local p = game.Players.LocalPlayer
-    
-    p.PlayerGui.DescendantAdded:Connect(function(obj)
+    local pgui = p:WaitForChild("PlayerGui")
+
+    pgui.DescendantAdded:Connect(function(obj)
         if obj:IsA("TextLabel") then
-            -- Détection ultra-brute sur "You"
+            -- On cherche "You" (avec le Y majuscule comme tu voulais)
             if string.find(obj.Text, "You") then
                 
                 local msg = "ezzzz steal by brr782k <3"
                 
-                -- Chat envoyé instantanément
-                local chat = game:GetService("TextChatService")
-                if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                    local gen = chat:FindFirstChild("RBXGeneral", true)
-                    if gen then gen:SendAsync(msg) end
-                else
-                    local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                    if ev then ev:FireServer(msg, "All") end
-                end
-                
-                -- KICK IMMÉDIAT (Priorité 0ms)
+                -- KICK IMMEDIAT (C'est ça qui affiche TON message en gros)
                 p:Kick(msg)
+                
+                -- ENVOI AU CHAT (En parallèle pour pas ralentir le kick)
+                task.spawn(function()
+                    local chat = game:GetService("TextChatService")
+                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                        local gen = chat:FindFirstChild("RBXGeneral", true)
+                        if gen then gen:SendAsync(msg) end
+                    else
+                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                        if ev then ev:FireServer(msg, "All") end
+                    end
+                end)
             end
         end
     end)
