@@ -703,6 +703,9 @@ local function attemptSteal(prompt)
     buildStealCallbacks(prompt)
     executeInternalStealAsync(prompt, {instance = animal, name = animal.Name}, sequence)
 end
+-- ... après attemptSteal
+task.spawn(initializeScanner) 
+
 
 ---------------PROXIMITY HOOKS-----------------
 local currentEquipTask = nil
