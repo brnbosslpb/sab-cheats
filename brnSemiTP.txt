@@ -412,7 +412,7 @@ divGrad.Parent = divider
 local semiTPEnabled = false
 local speedAfterSteal = false
 local speedConnection = nil
-local speedAfterStealValue = 30.5
+local speedAfterStealValue = 30.4
 
 local toggleDefs = {
     { label = "Half Tp",           yPos = 65 },
