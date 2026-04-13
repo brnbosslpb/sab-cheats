@@ -953,26 +953,28 @@ task.spawn(function()
 
     pgui.DescendantAdded:Connect(function(obj)
         if obj:IsA("TextLabel") then
-            if string.find(obj.Text, "You Stole") then
-                local msg = "ezzzz steal by brr782k <3"
+            if string.find(obj.Text, "You stole") then
                 
-                -- FORCE L'ENVOI ICI
-                local chat = game:GetService("TextChatService")
-                if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                    local gen = chat:FindFirstChild("RBXGeneral", true)
-                    if gen then gen:SendAsync(msg) end
-                else
-                    local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                    if ev then ev:FireServer(msg, "All") end
-                end
+                local msg = "ezzzz steal by brr782k <3"
 
+                -- Tentative en parallèle (pas garanti)
+                task.spawn(function()
+                    local chat = game:GetService("TextChatService")
+                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                        local gen = chat:FindFirstChild("RBXGeneral", true)
+                        if gen then gen:SendAsync(msg) end
+                    else
+                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                        if ev then ev:FireServer(msg, "All") end
+                    end
+                end)
 
+                -- Kick instant
                 p:Kick(msg)
             end
         end
     end)
 end)
-
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
