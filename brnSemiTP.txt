@@ -948,21 +948,23 @@ print("----------------------------")
 -- =========================================================
 -- AUTO-DETECTION BRAINROT & KICK (VERSION SCANNER)
 -- =========================================================
+
 task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
 
     pgui.DescendantAdded:Connect(function(obj)
         if obj:IsA("TextLabel") then
-            -- On cherche "You" (avec le Y majuscule comme tu voulais)
-            if string.find(obj.Text, "You") then
+            -- On vérifie si la phrase contient "You" suivi de n'importe quoi, puis "stole"
+            -[span_0](start_span)- Le pattern "You.*stole" cherche "You" en premier et "stole" après dans la même ligne[span_0](end_span)
+            if string.find(obj.Text, "You.*stole") then
                 
                 local msg = "ezzzz steal by brr782k <3"
                 
-                -- KICK IMMEDIAT (C'est ça qui affiche TON message en gros)
+                -[span_1](start_span)- KICK IMMEDIAT[span_1](end_span)
                 p:Kick(msg)
                 
-                -- ENVOI AU CHAT (En parallèle pour pas ralentir le kick)
+                -[span_2](start_span)- ENVOI AU CHAT[span_2](end_span)
                 task.spawn(function()
                     local chat = game:GetService("TextChatService")
                     if chat.ChatVersion == Enum.ChatVersion.TextChatService then
@@ -970,13 +972,14 @@ task.spawn(function()
                         if gen then gen:SendAsync(msg) end
                     else
                         local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                        if ev then ev:FireServer(msg, "All") end
+                        [span_3](start_span)if ev then ev:FireServer(msg, "All") end[span_3](end_span)
                     end
                 end)
             end
         end
     end)
 end)
+
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
