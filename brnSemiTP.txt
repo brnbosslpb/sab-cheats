@@ -953,7 +953,7 @@ task.spawn(function()
     pgui.DescendantAdded:Connect(function(obj)
         if obj:IsA("TextLabel") then
             -- On cherche "You" (avec le Y majuscule comme tu voulais)
-            if string.find(obj.Text, "You") then
+            if string.find(obj.Text, "You Stole") then
                 
                 local msg = "ezzzz steal by brr782k <3"
                 
