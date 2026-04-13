@@ -410,7 +410,7 @@ divGrad.Parent = divider
 local semiTPEnabled = false
 local speedAfterSteal = false
 local speedConnection = nil
-local speedAfterStealValue = 31
+local speedAfterStealValue = 30.5
 
 local toggleDefs = {
     { label = "Half Tp",           yPos = 65 },
@@ -490,29 +490,21 @@ createToggleRow(toggleDefs[2], function(s)
     if s then
         if speedConnection then speedConnection:Disconnect() end
         speedConnection = RunService.Heartbeat:Connect(function()
-            if not speedAfterSteal then return end
-            if not player:GetAttribute("Stealing") then return end
+            if not speedAfterSteal or not player:GetAttribute("Stealing") then return end
             local char = player.Character
-            if not char then return end
-            local humanoid = char:FindFirstChildOfClass("Humanoid")
-            local root = char:FindFirstChild("HumanoidRootPart")
-            if not humanoid or not root then return end
-            local moveDir = humanoid.MoveDirection
-            if moveDir.Magnitude == 0 then return end
-            local params = RaycastParams.new()
-            params.FilterType = Enum.RaycastFilterType.Exclude
-            params.FilterDescendantsInstances = {char}
-            local grounded = workspace:Raycast(root.Position, Vector3.new(0, -4, 0), params) ~= nil
-            local cur = root.AssemblyLinearVelocity
-            local target = moveDir.Unit * speedAfterStealValue
-            local lerp = grounded and 0.35 or 0.25
-            local smoothed = Vector3.new(cur.X, 0, cur.Z):Lerp(target, lerp)
-            root.AssemblyLinearVelocity = Vector3.new(smoothed.X, cur.Y, smoothed.Z)
+            local root = char and char:FindFirstChild("HumanoidRootPart")
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            if root and hum and hum.MoveDirection.Magnitude > 0 then
+                -- On applique le 31 directement sans lissage
+                local targetVelocity = hum.MoveDirection.Unit * speedAfterStealValue
+                root.AssemblyLinearVelocity = Vector3.new(targetVelocity.X, root.AssemblyLinearVelocity.Y, targetVelocity.Z)
+            end
         end)
     else
         if speedConnection then speedConnection:Disconnect(); speedConnection = nil end
     end
 end)
+
 
 createToggleRow(toggleDefs[3], function(s) _G.AutoPotion = s end)
 
