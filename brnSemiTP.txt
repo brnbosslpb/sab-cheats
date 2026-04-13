@@ -977,7 +977,6 @@ Task.spawn(function()
                     end
                 end)
 
-                task.wait(0.1)
                 p:Kick(msg)
             end
         end
