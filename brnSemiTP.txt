@@ -120,7 +120,7 @@ local ProximityPromptService = game:GetService("ProximityPromptService")
 local CoreGui = game:GetService("CoreGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-Local pos1 = Vector3.new(-352.98, -7, 74.30)
+local pos1 = Vector3.new(-352.98, -7, 74.30)
 local pos2 = Vector3.new(-352.98, -6.49, 45.76)
 local standing1 = Vector3.new(-336.36, -4.59, 99.51)
 local standing2 = Vector3.new(-334.81, -4.59, 18.90)
@@ -669,7 +669,7 @@ local function ResetToWork()
         if hum then hum:ChangeState(Enum.HumanoidStateType.Dead) end
         char:ClearAllChildren()
         local f = Instance.new("Model", workspace)
-        player.Character = f task.wait()
+        player.Character = f; task.wait()
         player.Character = char f:Destroy()
     end
 end
