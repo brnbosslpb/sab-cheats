@@ -412,7 +412,7 @@ divGrad.Parent = divider
 local semiTPEnabled = false
 local speedAfterSteal = false
 local speedConnection = nil
-local speedAfterStealValue = 31
+local speedAfterStealValue = 30.5
 
 local toggleDefs = {
     { label = "Half Tp",           yPos = 65 },
@@ -754,6 +754,7 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
     if not data or not data.ready then return false end
     data.ready = false
     IsStealing = true
+    player:SetAttribute("Stealing", true)
     StealProgress = 0
     CurrentStealTarget = animalData
     task.spawn(function()
@@ -783,6 +784,7 @@ local function executeInternalStealAsync(prompt, animalData, sequence)
         data.ready = true
         task.wait(0.3)
         IsStealing = false
+        player:SetAttribute("Stealing", false)
         StealProgress = 0
         CurrentStealTarget = nil
     end)
