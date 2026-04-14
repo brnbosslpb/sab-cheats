@@ -659,7 +659,7 @@ local discordText = Instance.new("TextLabel")
 discordText.Size = UDim2.new(1, 0, 0, 12)
 discordText.Position = UDim2.new(0, 0, 1, -14)
 discordText.BackgroundTransparency = 1
-discordText.Text = "✦ M.T.S Hub ✦"
+discordText.Text = "@brr782k"
 discordText.TextColor3 = ThemeBlue
 discordText.TextSize = 7
 discordText.Font = Enum.Font.GothamBold
@@ -790,20 +790,31 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, plr)
             local carpet = backpack:FindFirstChild("Flying Carpet")
             if carpet then hum:EquipTool(carpet) task.wait(0.1) end
         end
-        local d1 = (root.Position - pos1).Magnitude
-        local d2 = (root.Position - pos2).Magnitude
-        root.CFrame = CFrame.new(d1 < d2 and pos1 or pos2)
-        if _G.AutoPotion then
-            local bp = player:FindFirstChild("Backpack")
-            if bp then
-                local potion = bp:FindFirstChild("Giant Potion")
-                if potion and player.Character and player.Character:FindFirstChild("Humanoid") then
-                    player.Character.Humanoid:EquipTool(potion)
-                    task.wait(0.)
-                    pcall(function() potion:Activate() end)
-                end
-            end
+        -- DISTANCE
+local d1 = (root.Position - pos1).Magnitude
+local d2 = (root.Position - pos2).Magnitude
+
+-- AUTO GIANT POTION (AVANT TP)
+if _G.AutoPotion then
+    local bp = player:FindFirstChild("Backpack")
+    local char = player.Character
+    local humPotion = char and char:FindFirstChildOfClass("Humanoid")
+
+    if bp and humPotion then
+        local potion = bp:FindFirstChild("Giant Potion")
+        if potion then
+            humPotion:EquipTool(potion)
+            task.wait(0.05)
+            pcall(function()
+                potion:Activate()
+            end)
+            task.wait(0.05)
         end
+    end
+end
+
+-- TP
+root.CFrame = CFrame.new(d1 < d2 and pos1 or pos2)
     end
     isHolding = false
 end)
