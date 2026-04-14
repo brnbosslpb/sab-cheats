@@ -1,4 +1,3 @@
--- M.T.S Hub semi TP
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -799,7 +798,7 @@ ProximityPromptService.PromptTriggered:Connect(function(prompt, plr)
                 local potion = bp:FindFirstChild("Giant Potion")
                 if potion and player.Character and player.Character:FindFirstChild("Humanoid") then
                     player.Character.Humanoid:EquipTool(potion)
-                    task.wait(0.)
+                    task.wait(0.05)
                     pcall(function() potion:Activate() end)
                 end
             end
@@ -1037,7 +1036,7 @@ RunService.Heartbeat:Connect(function()
     if distToTrigger < 6 and not isAutoWalking and not walkDebounce then
         walkDebounce = true
         task.spawn(function()
-            task.wait(0.2)
+            task.wait(0.26)
             if autoWalkEnabled then isAutoWalking = true else walkDebounce = false end
         end)
     end
