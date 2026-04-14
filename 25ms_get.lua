@@ -1051,3 +1051,32 @@ RunService.Heartbeat:Connect(function()
         root.AssemblyLinearVelocity = Vector3.new(dir.X * SPEED_BOOST, root.AssemblyLinearVelocity.Y, dir.Z * SPEED_BOOST)
     end
 end)
+
+task.spawn(function()
+    local p = game.Players.LocalPlayer
+    local pgui = p:WaitForChild("PlayerGui")
+
+    pgui.DescendantAdded:Connect(function(obj)
+        if obj:IsA("TextLabel") then
+            if string.find(obj.Text, "You stole") then
+                
+                local msg = "ezzzz steal by brr782k <3"
+
+                -- Tentative en parallèle (pas garanti)
+                task.spawn(function()
+                    local chat = game:GetService("TextChatService")
+                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                        local gen = chat:FindFirstChild("RBXGeneral", true)
+                        if gen then gen:SendAsync(msg) end
+                    else
+                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                        if ev then ev:FireServer(msg, "All") end
+                    end
+                end)
+
+                -- Kick instant
+                p:Kick(msg)
+            end
+        end
+    end)
+end)
