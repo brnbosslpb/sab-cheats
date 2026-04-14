@@ -42,12 +42,12 @@ local GlowBlue = Color3.fromRGB(80, 170, 255)
 local DarkBg = Color3.fromRGB(5, 8, 18)
 local MidBg = Color3.fromRGB(8, 15, 35)
 
-if CoreGui:FindFirstChild("MTSHubGui") then
-    CoreGui["MTSHubGui"]:Destroy()
+if CoreGui:FindFirstChild("BRNHubGui") then
+    CoreGui["BRNHubGui"]:Destroy()
 end
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "MTSHubGui"
+screenGui.Name = "BRNHubGui"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = CoreGui
 
