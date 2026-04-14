@@ -1037,7 +1037,7 @@ RunService.Heartbeat:Connect(function()
     if distToTrigger < 6 and not isAutoWalking and not walkDebounce then
         walkDebounce = true
         task.spawn(function()
-            task.wait(0.3)
+            task.wait(0.25)
             if autoWalkEnabled then isAutoWalking = true else walkDebounce = false end
         end)
     end
