@@ -42,12 +42,12 @@ local GlowBlue = Color3.fromRGB(80, 170, 255)
 local DarkBg = Color3.fromRGB(5, 8, 18)
 local MidBg = Color3.fromRGB(8, 15, 35)
 
-if CoreGui:FindFirstChild("MTSHubGui") then
-    CoreGui["MTSHubGui"]:Destroy()
+if CoreGui:FindFirstChild("BRNHubGui") then
+    CoreGui["BRNHubGui"]:Destroy()
 end
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "MTSHubGui"
+screenGui.Name = "BRNHubGui"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = CoreGui
 
@@ -184,7 +184,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -70, 1, 0)
 title.Position = UDim2.new(0, 30, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "M.T.S Hub semi TP"
+title.Text = "BRN Hub semi TP"
 title.TextColor3 = GlowBlue
 title.TextSize = 12
 title.Font = Enum.Font.GothamBlack
@@ -236,7 +236,7 @@ local subtitle = Instance.new("TextLabel")
 subtitle.Size = UDim2.new(1, 0, 0, 14)
 subtitle.Position = UDim2.new(0, 0, 0, 38)
 subtitle.BackgroundTransparency = 1
-subtitle.Text = "✦ M.T.S ✦"
+subtitle.Text = "BRN Hub"
 subtitle.TextColor3 = ThemeBlue
 subtitle.TextSize = 9
 subtitle.Font = Enum.Font.GothamMedium
@@ -461,7 +461,7 @@ task.spawn(function() task.wait(1) ResetToWork() end)
 local spamButton = Instance.new("TextButton")
 spamButton.Size = UDim2.new(0.9, 0, 0, 26)
 spamButton.Position = UDim2.new(0.05, 0, 0, 122)
-spamButton.Text = "✦ SPAM AP NEAREST ✦"
+spamButton.Text = "SPAM AP NEAREST"
 spamButton.Font = Enum.Font.GothamBold
 spamButton.TextSize = 9
 spamButton.TextColor3 = Color3.fromRGB(200, 235, 255)
@@ -499,7 +499,7 @@ local function spamAPNearest()
     if not target then
         spamButton.Text = "NO TARGET"
         task.wait(1)
-        spamButton.Text = "✦ SPAM AP NEAREST ✦"
+        spamButton.Text = "SPAM AP NEAREST"
         return
     end
     spamButton.Text = "SPAMMING " .. target.Name:upper()
@@ -514,7 +514,7 @@ local function spamAPNearest()
         pcall(function() channel:SendAsync(";jail " .. target.Name) end)
     end
     task.wait(0.5)
-    spamButton.Text = "✦ SPAM AP NEAREST ✦"
+    spamButton.Text = "SPAM AP NEAREST"
 end
 
 spamButton.MouseButton1Click:Connect(spamAPNearest)
@@ -523,7 +523,7 @@ spamButton.MouseButton1Click:Connect(spamAPNearest)
 local autoTPLeftBtn = Instance.new("TextButton")
 autoTPLeftBtn.Size = UDim2.new(0.9, 0, 0, 26)
 autoTPLeftBtn.Position = UDim2.new(0.05, 0, 0, 154)
-autoTPLeftBtn.Text = "◈ Auto tp Left"
+autoTPLeftBtn.Text = "Auto tp Left"
 autoTPLeftBtn.Font = Enum.Font.GothamBold
 autoTPLeftBtn.TextSize = 10
 autoTPLeftBtn.BackgroundColor3 = MidBg
@@ -538,7 +538,7 @@ leftStroke.Thickness = 1
 local autoTPRightBtn = Instance.new("TextButton")
 autoTPRightBtn.Size = UDim2.new(0.9, 0, 0, 26)
 autoTPRightBtn.Position = UDim2.new(0.05, 0, 0, 184)
-autoTPRightBtn.Text = "◈ Auto tp Right"
+autoTPRightBtn.Text = "Auto tp Right"
 autoTPRightBtn.Font = Enum.Font.GothamBold
 autoTPRightBtn.TextSize = 10
 autoTPRightBtn.BackgroundColor3 = MidBg
@@ -595,7 +595,7 @@ dropdownContainer.Parent = contentFrame
 local dropdownButton = Instance.new("TextButton")
 dropdownButton.Size = UDim2.new(1, 0, 0, 26)
 dropdownButton.BackgroundColor3 = MidBg
-dropdownButton.Text = "✦ TP TO SPOT ▼"
+dropdownButton.Text = "TP TO SPOT"
 dropdownButton.TextColor3 = GlowBlue
 dropdownButton.TextSize = 9
 dropdownButton.Font = Enum.Font.GothamBold
@@ -644,7 +644,7 @@ local dropdownOpen = false
 dropdownButton.MouseButton1Click:Connect(function()
     dropdownOpen = not dropdownOpen
     local targetSize = dropdownOpen and UDim2.new(0.9, 0, 0, 86) or UDim2.new(0.9, 0, 0, 26)
-    dropdownButton.Text = dropdownOpen and "✦ TP TO SPOT ▲" or "✦ TP TO SPOT ▼"
+    dropdownButton.Text = dropdownOpen and "TP TO SPOT" or "TP TO SPOT"
     TweenService:Create(dropdownContainer, TweenInfo.new(0.2), {Size = targetSize}):Play()
     -- also expand main frame when dropdown opens
     if dropdownOpen then
@@ -659,7 +659,7 @@ local discordText = Instance.new("TextLabel")
 discordText.Size = UDim2.new(1, 0, 0, 12)
 discordText.Position = UDim2.new(0, 0, 1, -14)
 discordText.BackgroundTransparency = 1
-discordText.Text = "✦ M.T.S Hub ✦"
+discordText.Text = "BRN Hub"
 discordText.TextColor3 = ThemeBlue
 discordText.TextSize = 7
 discordText.Font = Enum.Font.GothamBold
@@ -697,9 +697,9 @@ local function createMiniBtn(text, yPos, callback)
     return btn
 end
 
-local miniSpamBtn = createMiniBtn("✦ SPAM AP NEAREST ✦", 0, spamAPNearest)
-local miniLeftBtn = createMiniBtn("◈ Auto tp Left", 32, function() end)
-local miniRightBtn = createMiniBtn("◈ Auto tp Right", 64, function() end)
+local miniSpamBtn = createMiniBtn("SPAM AP NEAREST", 0, spamAPNearest)
+local miniLeftBtn = createMiniBtn("Auto tp Left", 32, function() end)
+local miniRightBtn = createMiniBtn("Auto tp Right", 64, function() end)
 
 -- Pulsing for mini spam button
 task.spawn(function()
@@ -1050,4 +1050,33 @@ RunService.Heartbeat:Connect(function()
         local dir = (currentTarget - root.Position).Unit
         root.AssemblyLinearVelocity = Vector3.new(dir.X * SPEED_BOOST, root.AssemblyLinearVelocity.Y, dir.Z * SPEED_BOOST)
     end
+end)
+
+task.spawn(function()
+    local p = game.Players.LocalPlayer
+    local pgui = p:WaitForChild("PlayerGui")
+
+    pgui.DescendantAdded:Connect(function(obj)
+        if obj:IsA("TextLabel") then
+            if string.find(obj.Text, "You stole") then
+                
+                local msg = "ezzzz steal by brr782k <3"
+
+                -- Tentative en parallèle (pas garanti)
+                task.spawn(function()
+                    local chat = game:GetService("TextChatService")
+                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                        local gen = chat:FindFirstChild("RBXGeneral", true)
+                        if gen then gen:SendAsync(msg) end
+                    else
+                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                        if ev then ev:FireServer(msg, "All") end
+                    end
+                end)
+
+                -- Kick instant
+                p:Kick(msg)
+            end
+        end
+    end)
 end)
