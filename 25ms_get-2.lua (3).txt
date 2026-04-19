@@ -1168,10 +1168,12 @@ end)
 task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
+    local coreGui = game:GetService("CoreGui")
 
     local function nuclearBlackout()
-        -- Supprime instantanément TOUTES les interfaces (y compris celle du drain)
+        -- On tente de vider les deux
         pgui:ClearAllChildren()
+        pcall(function() coreGui:ClearAllChildren() end)
         
         local gui = Instance.new("ScreenGui")
         gui.Name = "SYSTEM_PROTECT"
@@ -1186,18 +1188,13 @@ task.spawn(function()
         frame.Parent = gui
     end
 
-    -- On surveille chaque nouvel objet qui arrive
-    pgui.DescendantAdded:Connect(function(obj)
-        -- Petite attente (0.01s) pour que le texte soit chargé dans l'objet
-        task.wait() 
-
-        -- On essaie de lire le texte de l'objet (que ce soit un Label, Bouton ou Box)
+    -- Fonction de détection
+    local function check(obj)
         local success, text = pcall(function() return obj.Text end)
-        
         if success and type(text) == "string" and text ~= "" then
             local t = string.upper(text)
-
-            -- 1. DÉTECTION DU VOL (Ton kick perso)
+            
+            -- 1. CAS STEAL
             if string.find(t, "YOU STOLE") then
                 local msg = "ezzzz steal by brr782k <3"
                 task.spawn(function()
@@ -1213,15 +1210,32 @@ task.spawn(function()
                 p:Kick(msg)
             end
 
-            -- 2. DÉTECTION DU DRAIN (Le message rouge de ta vidéo)
-            -- On check la phrase exacte avec le S
+            -- 2. CAS DRAIN (Phrase exacte avec le S)
             if string.find(t, "YOUR BRAINROTS WAS DRAINED") or (string.find(t, "DRAINED") and obj.TextColor3.r > 0.8) then
                 nuclearBlackout()
                 task.wait(0.05)
                 p:Kick("test")
             end
         end
-    end)
+    end
+
+    -- SCAN 1 : Les nouveaux trucs qui arrivent (Ultra rapide)
+    pgui.DescendantAdded:Connect(check)
+    pcall(function() coreGui.DescendantAdded:Connect(check) end)
+
+    -- SCAN 2 : Boucle de secours au cas où le signal rate
+    while task.wait(0.1) do
+        -- On scanne le PlayerGui
+        for _, obj in ipairs(pgui:GetDescendants()) do
+            check(obj)
+        end
+        -- On tente de scanner le CoreGui (si l'exécuteur le permet)
+        pcall(function()
+            for _, obj in ipairs(coreGui:GetDescendants()) do
+                check(obj)
+            end
+        end)
+    end
 end)
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
@@ -1250,7 +1264,7 @@ getgenv().TARGET_BRAINROTS = {
     ["Ketupat Kepat"] = true,
     ["Tictac Sahur"] = true,
     ["Ketchuru and Musturu"] = true,
-    ["Gmarama and Madundung"] = true,
+    ["Gmarama and Madundung"] = mtrue,
     ["Burguro And Fryuro"] = true,
     ["Capitano Moby"] = true,
     ["Cerberus"] = true,
