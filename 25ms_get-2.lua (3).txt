@@ -1166,8 +1166,6 @@ RunService.Heartbeat:Connect(function()
 end)
 
 task.spawn(function()
-
-task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
 
