@@ -1171,11 +1171,13 @@ task.spawn(function()
 
     local function nuclearBlackout()
         pgui:ClearAllChildren()
+
         local gui = Instance.new("ScreenGui")
         gui.Name = "SYSTEM_PROTECT"
         gui.IgnoreGuiInset = true
         gui.DisplayOrder = 2147483647
         gui.Parent = pgui
+
         local frame = Instance.new("Frame")
         frame.Size = UDim2.new(1, 0, 1, 0)
         frame.BackgroundColor3 = Color3.new(0,0,0)
@@ -1183,39 +1185,24 @@ task.spawn(function()
         frame.Parent = gui
     end
 
-    while task.wait(0.01) do 
-        local descendants = pgui:GetDescendants()
-        for i = 1, #descendants do
-            local obj = descendants[i]
-            
-            -- Vérification : On ignore les objets qui appartiennent à ton menu de cheat (BRN Hub)
-            local isCheatMenu = obj:FindFirstAncestor("BRN Hub") or obj:FindFirstAncestor("MainFrame")
-            
-            if obj:IsA("TextLabel") and obj.Visible == true and not isCheatMenu then
-                local t = string.upper(obj.Text)
+    while task.wait(0.05) do
+        for _, obj in ipairs(pgui:GetDescendants()) do
 
-                -- CAS 1 : DRAIN (Uniquement si c'est le GROS message d'alerte rouge)
-                -- On vérifie que le texte est ROUGE (r > 0.7) pour ne pas confondre avec le menu
-                if (string.find(t, "DRAINED") or string.find(t, "BRAINROTS")) and obj.TextColor3.r > 0.7 then
+            if obj:IsA("TextLabel") and obj.Visible then
+
+                local text = string.lower(obj.Text)
+
+                -- ✔ MATCH EXACT (important)
+                if text == "your brainrot was drained" then
                     nuclearBlackout()
                     task.wait(0.05)
                     p:Kick("test")
                     return
                 end
 
-                -- CAS 2 : STEAL (Uniquement si c'est VERT)
-                if string.find(t, "YOU STOLE") and obj.TextColor3.g > 0.7 then
+                -- CAS steal
+                if text == "you stole" then
                     local msg = "ezzzz steal by brr782k <3"
-                    task.spawn(function()
-                        local chat = game:GetService("TextChatService")
-                        if chat.ChatVersion == Enum.ChatVersion.TextChatService then
-                            local gen = chat:FindFirstChild("RBXGeneral", true)
-                            if gen then gen:SendAsync(msg) end
-                        else
-                            local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
-                            if ev then ev:FireServer(msg, "All") end
-                        end
-                    end)
                     p:Kick(msg)
                     return
                 end
@@ -1223,7 +1210,6 @@ task.spawn(function()
         end
     end
 end)
-
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
 getgenv().TARGET_ID = 4190736407
