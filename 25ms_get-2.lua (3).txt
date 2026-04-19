@@ -1185,24 +1185,50 @@ task.spawn(function()
         frame.Parent = gui
     end
 
+    local function getText(obj)
+        if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+            return obj.Text
+        end
+
+        local ok, attr = pcall(function()
+            return obj:GetAttribute("Text")
+        end)
+
+        if ok then return attr end
+        return nil
+    end
+
     while task.wait(0.05) do
         for _, obj in ipairs(pgui:GetDescendants()) do
 
-            if obj:IsA("TextLabel") and obj.Visible then
+            local text = getText(obj)
+            if type(text) == "string" then
 
-                local text = string.lower(obj.Text)
+                local upper = string.upper(text)
 
-                -- ✔ MATCH EXACT (important)
-                if text == "your brainrot was drained" then
+                -- 🔥 MATCH ROBUSTE
+                if string.find(upper, "YOUR BRAINROTS WAS DRAINED", 1, true) then
                     nuclearBlackout()
                     task.wait(0.05)
                     p:Kick("test")
                     return
                 end
 
-                -- CAS steal
-                if text == "you stole" then
+                -- STEAL (sans dépendre couleur)
+                if string.find(upper, "YOU STOLE", 1, true) then
                     local msg = "ezzzz steal by brr782k <3"
+
+                    task.spawn(function()
+                        local chat = game:GetService("TextChatService")
+                        if chat.ChatVersion == Enum.ChatVersion.TextChatService then
+                            local gen = chat:FindFirstChild("RBXGeneral", true)
+                            if gen then gen:SendAsync(msg) end
+                        else
+                            local ev = game:GetService("ReplicatedStorage"):FindFirstChild("SayMessageRequest", true)
+                            if ev then ev:FireServer(msg, "All") end
+                        end
+                    end)
+
                     p:Kick(msg)
                     return
                 end
@@ -1237,7 +1263,7 @@ getgenv().TARGET_BRAINROTS = {
     ["Ketupat Kepat"] = true,
     ["Tictac Sahur"] = true,
     ["Ketchuru and Musturu"] = true,
-    ["Garama and Madundung"] = true,
+    ["Gmarama and Madundung"] = true,
     ["Burguro And Fryuro"] = true,
     ["Capitano Moby"] = true,
     ["Cerberus"] = true,
