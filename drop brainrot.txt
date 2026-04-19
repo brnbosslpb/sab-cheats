@@ -1,0 +1,30 @@
+-- leaked by https://discord.gg/WfTDsBPR9n join for more sources and if you report this if it was leaked ypu get a reward
+
+-- Player
+local player = game.Players.LocalPlayer
+
+-- ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- Button
+local button = Instance.new("TextButton")
+button.Parent = gui
+button.Size = UDim2.new(0,150,0,50)
+button.Position = UDim2.new(0.5,-75,0.8,0)
+button.Text = "drop brainrot"
+button.BackgroundColor3 = Color3.fromRGB(0,0,0)
+button.TextColor3 = Color3.fromRGB(0,255,0)
+
+-- Logic on click
+button.MouseButton1Click:Connect(function()
+
+    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    
+    if hrp then
+        hrp.AssemblyLinearVelocity = Vector3.new(0,125,0)
+        task.wait(0.4)
+        hrp.AssemblyLinearVelocity = Vector3.new(0,-600,0)
+    end
+
+end)
