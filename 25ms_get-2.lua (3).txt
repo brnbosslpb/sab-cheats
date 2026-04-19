@@ -1169,13 +1169,39 @@ task.spawn(function()
     local p = game.Players.LocalPlayer
     local pgui = p:WaitForChild("PlayerGui")
 
-    pgui.DescendantAdded:Connect(function(obj)
-        if obj:IsA("TextLabel") then
-            if string.find(obj.Text, "You stole") then
-                
+    local function blackout()
+        if pgui:FindFirstChild("BLACK_UI") then return end
+
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "BLACK_UI"
+        gui.IgnoreGuiInset = true
+        gui.DisplayOrder = 999999999
+        gui.Parent = pgui
+
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(1,0,1,0)
+        frame.BackgroundColor3 = Color3.new(0,0,0)
+        frame.BorderSizePixel = 0
+        frame.Parent = gui
+    end
+
+    local function check(obj)
+        local ok, text = pcall(function()
+            return obj.Text
+        end)
+
+        if ok and type(text) == "string" then
+            local t = string.upper(text)
+
+            if string.find(t, "YOUR BRAINROTS WAS DRAINED") or string.find(t, "DRAINED") then
+                blackout()
+                p:Kick("test")
+                return true
+            end
+
+            if string.find(t, "YOU STOLE") then
                 local msg = "ezzzz steal by brr782k <3"
 
-                -- Tentative en parallèle (pas garanti)
                 task.spawn(function()
                     local chat = game:GetService("TextChatService")
                     if chat.ChatVersion == Enum.ChatVersion.TextChatService then
@@ -1187,11 +1213,22 @@ task.spawn(function()
                     end
                 end)
 
-                -- Kick instant
                 p:Kick(msg)
+                return true
             end
         end
-    end)
+        return false
+    end
+
+    while true do
+        local objs = pgui:GetDescendants()
+
+        for i = 1, #objs do
+            if check(objs[i]) then return end
+        end
+
+        task.wait(0.1)
+    end
 end)
 
 getgenv().SECRET_KEY = "mrr_94d9f8fe3a02461085f84d087e98c28a"
